@@ -1,0 +1,23 @@
+ __  __                                 
+|  \/  | ___ _ __ ___   ___  _ __ _   _ 
+| |\/| |/ _ \ '_ ` _ \ / _ \| '__| | | |
+| |  | |  __/ | | | | | (_) | |  | |_| |
+|_|  |_|\___|_| |_| |_|\___/|_|   \__, |
+                                  |___/  
+
+Allan Legemaate, Allan Daniel Software
+-----------------------
+Adsgames 2013
+Changelog:
+-----------------------
+
+Version 1.1
+--------------
+*Icon changed
+
+Version 1.0
+--------------
+*Game released
+
+Visit us at www.adsgames.net
+Contact us at contact@adsgames.net
