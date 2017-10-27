@@ -6,10 +6,17 @@
                                   |___/  
 
 Allan Legemaate, Allan Daniel Software
------------------------
-Adsgames 2013
-Changelog:
------------------------
+------------------------
+ A.D.S. Games 2013-2017
+ Changelog:
+------------------------
+
+Version 1.2
+--------------
+*Flipping much less buggy
+*Removed FMOD
+*New Splash
+*Using PNG instead of BMP
 
 Version 1.1
 --------------

@@ -12,22 +12,25 @@
 				<Option object_output="output" />
 				<Option type="0" />
 				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-lalpng" />
+					<Add option="-lalleg" />
+				</Linker>
 			</Target>
 		</Build>
-		<Linker>
-			<Add library="alleg" />
-			<Add library="fmod" />
-		</Linker>
-		<Unit filename="button.cpp" />
-		<Unit filename="button.h" />
-		<Unit filename="card.cpp" />
-		<Unit filename="card.h" />
-		<Unit filename="globals.cpp" />
-		<Unit filename="globals.h" />
-		<Unit filename="main.cpp" />
-		<Unit filename="resources.rc">
+		<Unit filename="include/button.h" />
+		<Unit filename="include/card.h" />
+		<Unit filename="include/globals.h" />
+		<Unit filename="res/resources.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
+		<Unit filename="src/button.cpp" />
+		<Unit filename="src/card.cpp" />
+		<Unit filename="src/globals.cpp" />
+		<Unit filename="src/main.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
