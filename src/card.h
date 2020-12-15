@@ -1,54 +1,54 @@
 #ifndef CARD_H
 #define CARD_H
 
-#include "globals.h"
 #include <time.h>
+#include "globals.h"
 
-class card{
-  public:
-    card(int newX, int newY, int newType, int newSize);
-    ~card();
+class card {
+ public:
+  card(int newX, int newY, int newType, int newSize);
+  ~card();
 
-    void logic();
-    void draw(BITMAP* tempBitmap);
+  void logic();
+  void draw(BITMAP* tempBitmap);
 
-    void deselect();
-    void match();
-    void setType(int newType);
+  void deselect();
+  void match();
+  void setType(int newType);
 
-    bool getSelected();
-    bool getMatched();
-    int getType();
-    bool getAnimationDone();
-    bool getOffScreen();
-  private:
-    BITMAP* image[2];
-    SAMPLE* card_flip;
-    SAMPLE* whoosh;
+  bool getSelected();
+  bool getMatched();
+  int getType();
+  bool getAnimationDone();
+  bool getOffScreen();
 
-    int x;
-    int y;
+ private:
+  BITMAP* image[2];
+  SAMPLE* card_flip;
+  SAMPLE* whoosh;
 
-    int width;
-    int height;
+  int x;
+  int y;
 
-    int type;
+  int width;
+  int height;
 
-    //If selected or not
-    bool selected;
+  int type;
 
-    //The turning animation is done
-    bool animationDone;
+  // If selected or not
+  bool selected;
 
-    //True when picture side up
-    bool flipped;
+  // The turning animation is done
+  bool animationDone;
 
-    //True when a match is made
-    bool matched;
+  // True when picture side up
+  bool flipped;
 
-    //First one around on the animation back
-    clock_t time_clicked;
+  // True when a match is made
+  bool matched;
+
+  // First one around on the animation back
+  clock_t time_clicked;
 };
 
 #endif
-
