@@ -17,11 +17,9 @@ target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic)
 # Find libs
 find_library(ALLEGRO_LIBRARY NAMES alleg44 alleg REQUIRED)
 find_library(ALLEGRO_PNG_LIBRARY NAMES loadpng REQUIRED)
-find_library(ALLEGRO_OGG_LIBRARY NAMES logg REQUIRED)
 
 
 # Link Libs
 target_link_libraries(${PROJECT_NAME} ${ALLEGRO_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${ALLEGRO_PNG_LIBRARY})
-target_link_libraries(${PROJECT_NAME} ${ALLEGRO_OGG_LIBRARY})
 
