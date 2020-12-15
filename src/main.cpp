@@ -8,7 +8,7 @@
 #include "card.h"
 #include "button.h"
 
-#include <alpng.h>
+#include <loadpng.h>
 
 using namespace std;
 
@@ -128,19 +128,19 @@ void setup(bool first){
 
     //Creates a buffer
     buffer = create_bitmap( 1280, 960);
-    intro = load_bitmap( "img/intro.png", NULL);
-    background = load_bitmap( "img/backgrounds/background.png", NULL);
-    background_menu = load_bitmap( "img/backgrounds/background_menu.png", NULL);
+    intro = load_png( "img/intro.png", NULL);
+    background = load_png( "img/backgrounds/background.png", NULL);
+    background_menu = load_png( "img/backgrounds/background_menu.png", NULL);
 
     //Level Select Images
-    levelSelect = load_bitmap ( "img/selector/levelSelect.png", NULL);
-    levelSelectLeft = load_bitmap ( "img/selector/levelSelectLeft.png", NULL);
-    levelSelectRight = load_bitmap ( "img/selector/levelSelectRight.png", NULL);
+    levelSelect = load_png ( "img/selector/levelSelect.png", NULL);
+    levelSelectLeft = load_png ( "img/selector/levelSelectLeft.png", NULL);
+    levelSelectRight = load_png ( "img/selector/levelSelectRight.png", NULL);
 
-    difficultyImages[0] = load_bitmap ( "img/selector/easy.png", NULL);
-    difficultyImages[1] = load_bitmap ( "img/selector/medium.png", NULL);
-    difficultyImages[2] = load_bitmap ( "img/selector/hard.png", NULL);
-    difficultyImages[3] = load_bitmap ( "img/selector/extreme.png", NULL);
+    difficultyImages[0] = load_png ( "img/selector/easy.png", NULL);
+    difficultyImages[1] = load_png ( "img/selector/medium.png", NULL);
+    difficultyImages[2] = load_png ( "img/selector/hard.png", NULL);
+    difficultyImages[3] = load_png ( "img/selector/extreme.png", NULL);
 
 
     // Button images
@@ -613,7 +613,6 @@ void draw( bool toScreen){
 int main(){
   //Initializing
   allegro_init();
-  alpng_init();
   install_keyboard();
   install_timer();
   install_mouse();

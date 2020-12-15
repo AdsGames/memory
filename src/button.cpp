@@ -1,5 +1,7 @@
 #include "button.h"
 
+#include <loadpng.h>
+
 using namespace std;
 
 Button::Button( int newX, int newY, int newWidth, int newHeight){
@@ -14,8 +16,8 @@ Button::~Button(){
 }
 
 void Button::setImages( char newImage1[], char newImage2[]){  
-  image[0]= load_bitmap(newImage1, NULL);
-  image[1]= load_bitmap(newImage2, NULL);
+  image[0]= load_png(newImage1, NULL);
+  image[1]= load_png(newImage2, NULL);
 }
 
 void Button::setHover(bool newHover){

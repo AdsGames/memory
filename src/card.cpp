@@ -1,5 +1,7 @@
 #include "card.h"
 
+#include <loadpng.h>
+
 // Constructor
 card::card(int newX, int newY, int newType, int newSize){
   x = newX;
@@ -15,9 +17,9 @@ card::card(int newX, int newY, int newType, int newSize){
   width = newSize;
   height = newSize;
 
-  image[0] = load_bitmap("img/cards/card_large.png", NULL);
+  image[0] = load_png("img/cards/card_large.png", NULL);
   std::string fileName = "img/cards/card_large_flip_" + convertInt(type) + ".png";
-  image[1] = load_bitmap(fileName.c_str(), NULL);
+  image[1] = load_png(fileName.c_str(), NULL);
 
   card_flip = load_sample("sfx/card_flip.wav");
   whoosh = load_sample("sfx/whoosh.wav");
@@ -49,7 +51,7 @@ void card::match(){
 void card::setType(int newType){
   type = newType;
   std::string fileName = "img/cards/card_large_flip_" + convertInt(type) + ".png";
-  image[1] = load_bitmap(fileName.c_str(), NULL);
+  image[1] = load_png(fileName.c_str(), NULL);
 }
 
 // If selected
