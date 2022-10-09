@@ -1,6 +1,6 @@
 #include "card.h"
 
-#include <loadpng.h>
+#include <asw/util/MouseListener.h>
 
 // Constructor
 card::card(int newX, int newY, int newType, int newSize) {
@@ -17,13 +17,13 @@ card::card(int newX, int newY, int newType, int newSize) {
   width = newSize;
   height = newSize;
 
-  image[0] = load_png("img/cards/card_large.png", NULL);
+  image[0] = asw::load::texture("assets/img/cards/card_large.png");
   std::string fileName =
-      "img/cards/card_large_flip_" + convertInt(type) + ".png";
-  image[1] = load_png(fileName.c_str(), NULL);
+      "assets/img/cards/card_large_flip_" + convertInt(type) + ".png";
+  image[1] = asw::load::texture(fileName.c_str());
 
-  card_flip = load_sample("sfx/card_flip.wav");
-  whoosh = load_sample("sfx/whoosh.wav");
+  card_flip = asw::load::sample("assets/sfx/card_flip.wav");
+  whoosh = asw::load::sample("assets/sfx/whoosh.wav");
 }
 
 // Deconstructor
@@ -33,7 +33,7 @@ card::~card() {}
 void card::deselect() {
   time_clicked = clock();
   selected = false;
-  play_sample(card_flip, 255, 125, 1000, 0);
+  asw::sound::play(card_flip);
   flipped = true;
   animationDone = false;
 }
@@ -42,7 +42,7 @@ void card::deselect() {
 void card::match() {
   if (!matched) {
     matched = true;
-    play_sample(whoosh, 255, 125, 1000, 0);
+    asw::sound::play(whoosh);
   }
 }
 
@@ -50,8 +50,8 @@ void card::match() {
 void card::setType(int newType) {
   type = newType;
   std::string fileName =
-      "img/cards/card_large_flip_" + convertInt(type) + ".png";
-  image[1] = load_png(fileName.c_str(), NULL);
+      "assets/img/cards/card_large_flip_" + convertInt(type) + ".png";
+  image[1] = asw::load::texture(fileName);
 }
 
 // If selected
@@ -76,8 +76,9 @@ bool card::getAnimationDone() {
 
 // Return if off the screen
 bool card::getOffScreen() {
-  if (x < 0 - image[0]->w || x > 1280 + image[0]->w || y < 0 - image[0]->h ||
-      y > 960 + image[0]->h) {
+  auto size = asw::util::getTextureSize(image[0]);
+  if (x < 0 - size.x || x > 1280 + size.x || y < 0 - size.y ||
+      y > 960 + size.y) {
     return true;
   }
   return false;
@@ -85,12 +86,12 @@ bool card::getOffScreen() {
 
 // Logic
 void card::logic() {
-  if (mouse_b & 1 && numberSelected < 2) {
-    if (collision(mouse_x * resDiv, mouse_x * resDiv, x, x + width,
-                  mouse_y * resDiv, mouse_y * resDiv, y, y + height) &&
+  if (MouseListener::mouse_pressed & 1 && numberSelected < 2) {
+    if (collision(MouseListener::x, MouseListener::x, x, x + width,
+                  MouseListener::y, MouseListener::y, y, y + height) &&
         !selected) {
       time_clicked = clock();
-      play_sample(card_flip, 255, 125, 1000, 0);
+      asw::sound::play(card_flip);
       selected = true;
       flipped = false;
       animationDone = false;
@@ -110,43 +111,43 @@ void card::logic() {
 }
 
 // Draw
-void card::draw(BITMAP* tempBitmap) {
+void card::draw() {
   clock_t timeElapsed = (clock() - time_clicked);
   if (selected) {
     if (!animationDone) {
       if (!flipped) {
-        stretch_sprite(tempBitmap, image[0], x + timeElapsed / 2, y,
-                       width - timeElapsed, height);
+        asw::draw::stretchSprite(image[0], x + timeElapsed / 2, y,
+                                 width - timeElapsed, height);
         if (timeElapsed > width) {
           flipped = true;
           time_clicked = clock();
         }
       } else {
-        stretch_sprite(tempBitmap, image[1], x + width / 2 - timeElapsed / 2, y,
-                       timeElapsed, height);
+        asw::draw::stretchSprite(image[1], x + width / 2 - timeElapsed / 2, y,
+                                 timeElapsed, height);
         if (timeElapsed > width)
           animationDone = true;
       }
     } else {
-      stretch_sprite(tempBitmap, image[1], x, y, width, height);
+      asw::draw::stretchSprite(image[1], x, y, width, height);
     }
   } else {
     if (!animationDone) {
       if (flipped) {
-        stretch_sprite(tempBitmap, image[1], x + timeElapsed / 2, y,
-                       width - timeElapsed, height);
+        asw::draw::stretchSprite(image[1], x + timeElapsed / 2, y,
+                                 width - timeElapsed, height);
         if (timeElapsed > width) {
           flipped = false;
           time_clicked = clock();
         }
       } else {
-        stretch_sprite(tempBitmap, image[0], x + width / 2 - timeElapsed / 2, y,
-                       timeElapsed, height);
+        asw::draw::stretchSprite(image[0], x + width / 2 - timeElapsed / 2, y,
+                                 timeElapsed, height);
         if (timeElapsed > width)
           animationDone = true;
       }
     } else {
-      stretch_sprite(tempBitmap, image[0], x, y, width, height);
+      asw::draw::stretchSprite(image[0], x, y, width, height);
     }
   }
 }

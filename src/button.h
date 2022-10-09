@@ -3,20 +3,19 @@
 
 #include "globals.h"
 
-using namespace std;
+#include <asw/asw.h>
 
 class Button {
  public:
+  Button();
   Button(int newX, int newY, int newWidth, int newHeight);
-  ~Button();
 
-  void setImages(char newImage1[], char newImage2[]);
+  void setImages(const std::string& path1, const std::string& path2);
 
   void setHover(bool newHover);
   bool getHover();
 
-  void draw(BITMAP* tempBitmap);
-  void drawNewSprite(BITMAP* tempBitmap, BITMAP* spriteToDraw);
+  void draw();
 
   void setPosition(int newX, int newY);
 
@@ -34,7 +33,7 @@ class Button {
 
   bool hover;
 
-  BITMAP* image[2];
+  asw::Texture image[2];
 };
 
 #endif
