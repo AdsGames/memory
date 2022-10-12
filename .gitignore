@@ -48,5 +48,10 @@ Makefile
 install_manifest.txt
 bin
 docs
-lib
-build/Memory*
+
+.ninja*
+build.ninja
+*.exe
+/build
+.idea
+Testing/

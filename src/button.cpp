@@ -1,8 +1,8 @@
 #include "button.h"
 
-#include <loadpng.h>
+#include <asw/util/MouseListener.h>
 
-using namespace std;
+Button::Button() : Button(0, 0, 0, 0) {}
 
 Button::Button(int newX, int newY, int newWidth, int newHeight) {
   x = newX;
@@ -11,13 +11,9 @@ Button::Button(int newX, int newY, int newWidth, int newHeight) {
   height = newHeight;
 }
 
-Button::~Button() {
-  delete[] image[0], image[1];
-}
-
-void Button::setImages(char newImage1[], char newImage2[]) {
-  image[0] = load_png(newImage1, NULL);
-  image[1] = load_png(newImage2, NULL);
+void Button::setImages(const std::string& path1, const std::string& path2) {
+  image[0] = asw::load::texture(path1);
+  image[1] = asw::load::texture(path2);
 }
 
 void Button::setHover(bool newHover) {
@@ -30,8 +26,8 @@ bool Button::getHover() {
 }
 
 bool Button::checkHover() {
-  if (collision(mouse_x * resDiv, mouse_x * resDiv, x, x + width,
-                mouse_y * resDiv, mouse_y * resDiv, y, y + height)) {
+  if (collision(MouseListener::x, MouseListener::x, x, x + width,
+                MouseListener::y, MouseListener::y, y, y + height)) {
     return true;
   } else {
     return false;
@@ -51,10 +47,10 @@ int Button::getY() {
   return y;
 }
 
-void Button::draw(BITMAP* tempBitmap) {
+void Button::draw() {
   if (getHover()) {
-    stretch_sprite(tempBitmap, image[1], x, y, width, height);
+    asw::draw::stretchSprite(image[1], x, y, width, height);
   } else {
-    stretch_sprite(tempBitmap, image[0], x, y, width, height);
+    asw::draw::stretchSprite(image[0], x, y, width, height);
   }
 }

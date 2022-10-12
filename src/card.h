@@ -1,7 +1,9 @@
 #ifndef CARD_H
 #define CARD_H
 
+#include <asw/asw.h>
 #include <time.h>
+
 #include "globals.h"
 
 class card {
@@ -10,7 +12,7 @@ class card {
   ~card();
 
   void logic();
-  void draw(BITMAP* tempBitmap);
+  void draw();
 
   void deselect();
   void match();
@@ -23,9 +25,10 @@ class card {
   bool getOffScreen();
 
  private:
-  BITMAP* image[2];
-  SAMPLE* card_flip;
-  SAMPLE* whoosh;
+  asw::Texture image[2];
+
+  asw::Sample card_flip;
+  asw::Sample whoosh;
 
   int x;
   int y;
