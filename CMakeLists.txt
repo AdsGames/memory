@@ -79,7 +79,6 @@ else(EMSCRIPTEN)
     ${SDL_IMAGE_LIBRARY} 
     ${SDL_TTF_LIBRARY} 
     ${SDL_GFX_LIBRARY} 
-    afk
   )
 endif(EMSCRIPTEN)
 
