@@ -1,7 +1,7 @@
 name: Build Web
 
 on:
-  pull_request:
+  push:
     branches:
       - main
 
