@@ -4,24 +4,26 @@
 #include <asw/asw.h>
 
 #include "State.h"
-#include "button.h"
+#include "ui/Button.h"
 
 // Intro screen of game
 class Menu : public State {
  public:
-  explicit Menu(StateEngine& engine) : State(engine) {}
+  using State::State;
 
-  virtual void init() override;
-  virtual void update() override;
-  virtual void draw() override;
-  virtual void cleanup() override{};
+  void init() override;
+  void update() override;
+  void draw() override;
+  void cleanup() override{
+      // Nothing to do
+  };
 
  private:
-  asw::Texture background_menu;
+  asw::Texture background;
 
-  Button button_start;
-  Button button_highscores;
-  Button button_quit;
+  Button buttonStart;
+  Button buttonHighscores;
+  Button buttonQuit;
 };
 
 #endif  // MENU_H

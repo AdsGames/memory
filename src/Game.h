@@ -5,23 +5,29 @@
 #include <string>
 #include <vector>
 
+#include "GameDifficulty.h"
 #include "State.h"
-#include "button.h"
 #include "card.h"
+#include "ui/InputBox.h"
+#include "util/ScoreManager.h"
 
 // Intro screen of game
 class Game : public State {
  public:
-  explicit Game(StateEngine& engine) : State(engine) {}
+  using State::State;
 
-  virtual void init() override;
-  virtual void update() override;
-  virtual void draw() override;
-  virtual void cleanup() override{};
+  void init() override;
+  void update() override;
+  void draw() override;
+  void cleanup() override{
+      // Nothing to do
+  };
 
-  void addScore(const std::string& name);
+  static GameDifficulty difficulty;
 
  private:
+  std::string getScoresFile() const;
+
   asw::Texture background;
   asw::Font font;
 
@@ -29,8 +35,9 @@ class Game : public State {
 
   std::vector<card> cards;
 
-  std::string edittext = "";
-  std::string::iterator iter = edittext.begin();
+  InputBox nameBox;
+
+  ScoreManager scoreManager;
 };
 
 #endif  // GAME_H

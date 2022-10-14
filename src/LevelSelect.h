@@ -3,29 +3,34 @@
 
 #include <asw/asw.h>
 
+#include "GameDifficulty.h"
 #include "State.h"
-#include "button.h"
+#include "ui/Button.h"
 
 // Intro screen of game
 class LevelSelect : public State {
  public:
-  explicit LevelSelect(StateEngine& engine) : State(engine) {}
+  using State::State;
 
-  virtual void init() override;
-  virtual void update() override;
-  virtual void draw() override;
-  virtual void cleanup() override{};
+  void init() override;
+  void update() override;
+  void draw() override;
+  void cleanup() override{
+      // Nothing to do
+  };
 
  private:
-  asw::Texture background_menu;
-  asw::Texture levelSelect;
-  asw::Texture levelSelectLeft;
-  asw::Texture levelSelectRight;
+  asw::Texture background;
   asw::Texture difficultyImages[4];
 
   asw::Font font;
 
   asw::Sample click;
+
+  GameDifficulty difficulty{GameDifficulty::EASY};
+
+  Button levelSelectLeft;
+  Button levelSelectRight;
 };
 
 #endif  // LEVEL_SELECT_H

@@ -6,52 +6,57 @@
 
 #include "globals.h"
 
+const clock_t CARD_FLIP_TIME_MS = 300;
+
 class card {
  public:
-  card(int newX, int newY, int newType, int newSize);
-  ~card();
+  card(int type, int size);
 
   void logic();
-  void draw();
+  void draw() const;
 
+  void setPosition(int x, int y);
   void deselect();
   void match();
-  void setType(int newType);
+  void setType(int type);
 
-  bool getSelected();
-  bool getMatched();
-  int getType();
-  bool getAnimationDone();
-  bool getOffScreen();
+  bool getSelected() const;
+  bool getMatched() const;
+  int getType() const;
+  bool getAnimationDone() const;
+  bool getOffScreen() const;
 
  private:
-  asw::Texture image[2];
+  asw::Texture faceImage;
+  asw::Texture backImage;
 
-  asw::Sample card_flip;
+  asw::Sample cardFlip;
   asw::Sample whoosh;
 
-  int x;
-  int y;
+  int x{0};
+  int y{0};
 
   int width;
   int height;
 
+  int animationWidth;
+
   int type;
 
   // If selected or not
-  bool selected;
+  bool selected{false};
 
   // The turning animation is done
-  bool animationDone;
+  bool animationDone{true};
 
   // True when picture side up
-  bool flipped;
+  bool flipped{false};
 
   // True when a match is made
-  bool matched;
+  bool matched{false};
 
   // First one around on the animation back
-  clock_t time_clicked;
+  clock_t timeClicked{0};
 };
 
 #endif

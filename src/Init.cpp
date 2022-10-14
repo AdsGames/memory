@@ -15,7 +15,7 @@ void Init::init() {
 void Init::cleanup() {}
 
 void Init::update() {
-  setNextState(StateEngine::STATE_INTRO);
+  setNextState(ProgramState::STATE_INTRO);
 }
 
 void Init::draw() {

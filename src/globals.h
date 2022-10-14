@@ -6,12 +6,6 @@
 extern int numberSelected;
 extern int cardSelected1;
 extern int cardSelected2;
-extern std::string scores[10][2];
-
-extern int difficulty;
-
-// Resolution X
-extern int resDiv;
 
 // Function to check for collision
 bool collision(float xMin1,
@@ -25,8 +19,5 @@ bool collision(float xMin1,
 
 // Random number generator. Use int random(lowest,highest);
 int random(int low, int high);
-
-// Convert int to string
-std::string convertInt(int number);
 
 #endif

@@ -13,12 +13,6 @@
  * STATE ENGINE
  *****************/
 
-// Init
-StateEngine::StateEngine()
-    : nextState(StateEngine::STATE_NULL),
-      currentState(StateEngine::STATE_NULL),
-      state(nullptr) {}
-
 // Draw
 void StateEngine::draw() {
   if (state) {
@@ -42,19 +36,19 @@ void StateEngine::update() {
 }
 
 // Set next state
-void StateEngine::setNextState(const int newState) {
+void StateEngine::setNextState(const ProgramState newState) {
   nextState = newState;
 }
 
 // Get state id
-int StateEngine::getStateId() const {
+ProgramState StateEngine::getStateId() const {
   return currentState;
 }
 
 // Change game screen
 void StateEngine::changeState() {
   // If the state needs to be changed
-  if (nextState == STATE_NULL) {
+  if (nextState == ProgramState::STATE_NULL) {
     return;
   }
 
@@ -66,38 +60,38 @@ void StateEngine::changeState() {
 
   // Change the state
   switch (nextState) {
-    case STATE_GAME:
+    case ProgramState::STATE_GAME:
       state = std::make_unique<Game>(*this);
-      std::cout << ("Switched state to game.\n");
+      std::cout << "Switched state to game." << std::endl;
       break;
 
-    case STATE_MENU:
+    case ProgramState::STATE_MENU:
       state = std::make_unique<Menu>(*this);
-      std::cout << ("Switched state to main menu.\n");
+      std::cout << "Switched state to main menu." << std::endl;
       break;
 
-    case STATE_INIT:
+    case ProgramState::STATE_INIT:
       state = std::make_unique<Init>(*this);
-      std::cout << ("Switched state to init.\n");
+      std::cout << "Switched state to init." << std::endl;
       break;
 
-    case STATE_INTRO:
+    case ProgramState::STATE_INTRO:
       state = std::make_unique<Intro>(*this);
-      std::cout << ("Switched state to intro.\n");
+      std::cout << "Switched state to intro." << std::endl;
       break;
 
-    case STATE_HIGH_SCORES:
+    case ProgramState::STATE_HIGH_SCORES:
       state = std::make_unique<HighScores>(*this);
-      std::cout << ("Switched state to high scores.\n");
+      std::cout << "Switched state to high scores." << std::endl;
       break;
 
-    case STATE_LEVEL_SELECT:
+    case ProgramState::STATE_LEVEL_SELECT:
       state = std::make_unique<LevelSelect>(*this);
-      std::cout << ("Switched state to level select.\n");
+      std::cout << "Switched state to level select." << std::endl;
       break;
 
     default:
-      std::cout << ("Exiting program.");
+      std::cout << "Exiting program." << std::endl;
       break;
   }
 
@@ -107,7 +101,7 @@ void StateEngine::changeState() {
   currentState = nextState;
 
   // NULL the next state ID
-  nextState = STATE_NULL;
+  nextState = ProgramState::STATE_NULL;
 }
 
 /*********
@@ -115,6 +109,6 @@ void StateEngine::changeState() {
  *********/
 
 // Change state
-void State::setNextState(const int state) {
+void State::setNextState(const ProgramState state) {
   this->engine.setNextState(state);
 }
