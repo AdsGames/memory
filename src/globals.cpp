@@ -1,6 +1,10 @@
 #include "globals.h"
 
+#include <random>
 #include <sstream>
+
+// Random device
+std::mt19937 rng(time(nullptr));
 
 int numberSelected = 0;
 int cardSelected1 = 0;
@@ -22,14 +26,7 @@ bool collision(float xMin1,
 }
 
 // Random number generator
-int random(int lowest, int highest) {
-  int range = (highest - lowest) + 1;
-  return lowest + int(range * rand() / (RAND_MAX + 1.0));
-}
-
-// Convert int to string
-std::string convertInt(int number) {
-  std::stringstream ss;
-  ss << number;
-  return ss.str();
+int random(int low, int high) {
+  std::uniform_int_distribution<int> dist6(low, high);
+  return dist6(rng);
 }

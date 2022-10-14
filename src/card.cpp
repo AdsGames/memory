@@ -42,7 +42,7 @@ void card::match() {
 void card::setType(int type) {
   this->type = type;
   std::string fileName =
-      "assets/img/cards/card_large_flip_" + convertInt(type) + ".png";
+      "assets/img/cards/card_large_flip_" + std::to_string(type) + ".png";
   faceImage = asw::assets::loadTexture(fileName);
 }
 

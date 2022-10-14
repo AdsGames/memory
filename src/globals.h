@@ -20,7 +20,4 @@ bool collision(float xMin1,
 // Random number generator. Use int random(lowest,highest);
 int random(int low, int high);
 
-// Convert int to string
-std::string convertInt(int number);
-
 #endif
