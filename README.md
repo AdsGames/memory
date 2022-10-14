@@ -2,6 +2,9 @@
 
 Match all the cards on the table in four different difficulties. Compete against yourself and others with the high-score tables.
 
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=AdsGames_Memory&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=AdsGames_Memory)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=AdsGames_Memory&metric=bugs)](https://sonarcloud.io/summary/new_code?id=AdsGames_Memory)
+
 ## Demo
 
 [Web Demo](https://adsgames.github.io/Memory/)
