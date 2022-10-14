@@ -16,7 +16,9 @@ class Intro : public State {
   void init() override;
   void update() override;
   void draw() override;
-  void cleanup() override{};
+  void cleanup() override{
+      // Nothing to do
+  };
 
  private:
   asw::Texture intro;

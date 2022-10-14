@@ -18,7 +18,7 @@ class InputBox {
 
   std::string getValue() const;
   void update();
-  void draw();
+  void draw() const;
   bool hover() const;
 
  private:

@@ -104,7 +104,7 @@ void InputBox::update() {
 }
 
 // Draw box
-void InputBox::draw() {
+void InputBox::draw() const {
   asw::draw::rectFill(x, y, width, height, asw::util::makeColor(12, 12, 12));
 
   asw::Color col = (hover() || focused) ? asw::util::makeColor(230, 230, 230)

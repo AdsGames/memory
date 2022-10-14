@@ -19,12 +19,14 @@ class Game : public State {
   void init() override;
   void update() override;
   void draw() override;
-  void cleanup() override{};
+  void cleanup() override{
+      // Nothing to do
+  };
 
   static GameDifficulty difficulty;
 
  private:
-  std::string getScoresFile();
+  std::string getScoresFile() const;
 
   asw::Texture background;
   asw::Font font;

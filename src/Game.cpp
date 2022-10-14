@@ -155,7 +155,7 @@ void Game::draw() {
   }
 }
 
-std::string Game::getScoresFile() {
+std::string Game::getScoresFile() const {
   std::string fileName = "";
 
   if (difficulty == GameDifficulty::EASY) {
