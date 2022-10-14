@@ -5,9 +5,9 @@
 
 // Includes
 #include <asw/asw.h>
-#include <asw/util/KeyListener.h>
-#include <asw/util/MouseListener.h>
+
 #include <chrono>
+#include <memory>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -23,7 +23,7 @@ using namespace std::chrono;
 constexpr nanoseconds timestep(16ms);
 
 // State engine
-StateEngine* game_state;
+std::unique_ptr<StateEngine> state;
 
 // Functions
 void setup();
@@ -37,31 +37,28 @@ int frames_done = 0;
 // Setup game
 void setup() {
   // Load allegro library
-  asw::util::init(1280, 960);
+  asw::core::init(1280, 960);
 
-  game_state = new StateEngine();
+  state = std::make_unique<StateEngine>();
 }
 
 // Update
 void update() {
-  // Update listeners
-  KeyListener::update();
-  MouseListener::update();
-
+  // Update core
   asw::core::update();
 
   // Do state logic
-  game_state->update();
+  state->update();
 
   // Handle exit
-  if (game_state->getStateId() == StateEngine::STATE_EXIT) {
+  if (state->getStateId() == ProgramState::STATE_EXIT) {
     asw::core::exit = true;
   }
 }
 
 // Do state rendering
 void draw() {
-  game_state->draw();
+  state->draw();
 }
 
 // Loop (emscripten compatibility)
@@ -78,7 +75,7 @@ int main(int argc, char* argv[]) {
   setup();
 
   // Set the current state ID
-  game_state->setNextState(StateEngine::STATE_INIT);
+  state->setNextState(ProgramState::STATE_INIT);
 
 #ifdef __EMSCRIPTEN__
   emscripten_set_main_loop(loop, 0, 1);
@@ -88,7 +85,7 @@ int main(int argc, char* argv[]) {
   nanoseconds lag(0ns);
   auto time_start = clock::now();
 
-  while (!KeyListener::keyDown[SDL_SCANCODE_ESCAPE] && !asw::core::exit) {
+  while (!asw::input::keyboard.down[SDL_SCANCODE_ESCAPE] && !asw::core::exit) {
     auto delta_time = clock::now() - time_start;
     time_start = clock::now();
     lag += duration_cast<nanoseconds>(delta_time);

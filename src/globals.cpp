@@ -5,13 +5,6 @@
 int numberSelected = 0;
 int cardSelected1 = 0;
 int cardSelected2 = 0;
-std::string scores[10][2];
-
-// extreme = 10, hard = 8, medium = 6, easy = 4
-int difficulty = 4;
-
-// Resolution X
-int resDiv;
 
 // Function to check for collision
 bool collision(float xMin1,
@@ -28,12 +21,10 @@ bool collision(float xMin1,
   return false;
 }
 
-// Random number generator. Use int random(lowest,highest);
-int random(int newLowest, int newHighest) {
-  int lowest = newLowest, highest = newHighest;
+// Random number generator
+int random(int lowest, int highest) {
   int range = (highest - lowest) + 1;
-  int randomNumber = lowest + int(range * rand() / (RAND_MAX + 1.0));
-  return randomNumber;
+  return lowest + int(range * rand() / (RAND_MAX + 1.0));
 }
 
 // Convert int to string

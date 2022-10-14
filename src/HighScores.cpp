@@ -1,130 +1,109 @@
 #include "HighScores.h"
 
-#include <asw/util/KeyListener.h>
-#include <asw/util/MouseListener.h>
-#include <fstream>
 #include <string>
 #include <vector>
 
 #include "globals.h"
 
 void HighScores::init() {
-  background_menu =
-      asw::load::texture("assets/img/backgrounds/background_menu.png");
+  background =
+      asw::assets::loadTexture("assets/img/backgrounds/background.png");
 
-  levelSelect = asw::load::texture("assets/img/selector/levelSelect.png");
-  levelSelectLeft =
-      asw::load::texture("assets/img/selector/levelSelectLeft.png");
-  levelSelectRight =
-      asw::load::texture("assets/img/selector/levelSelectRight.png");
+  levelSelectLeft = Button(0, 0);
+  levelSelectRight = Button(1080, 0);
 
-  font = asw::load::font("assets/fonts/ariblk.ttf", 24);
+  levelSelectLeft.setImages("assets/img/selector/level_select_left.png",
+                            "assets/img/selector/level_select_left_hover.png");
+  levelSelectRight.setImages(
+      "assets/img/selector/level_select_right.png",
+      "assets/img/selector/level_select_right_hover.png");
 
-  click = asw::load::sample("assets/sfx/click.wav");
+  levelSelectLeft.setOnClick([this]() {
+    if (difficulty != GameDifficulty::EASY) {
+      difficulty =
+          static_cast<GameDifficulty>(static_cast<int>(difficulty) - 1);
+      asw::sound::play(click);
+      updateScores();
+    }
+  });
+
+  levelSelectRight.setOnClick([this]() {
+    if (difficulty != GameDifficulty::EXTREME) {
+      difficulty =
+          static_cast<GameDifficulty>(static_cast<int>(difficulty) + 1);
+      asw::sound::play(click);
+      updateScores();
+    }
+  });
+
+  font = asw::assets::loadFont("assets/fonts/ariblk.ttf", 24);
+
+  click = asw::assets::loadSample("assets/sfx/click.wav");
 
   updateScores();
 }
 
 void HighScores::update() {
   // Go to menu
-  if (KeyListener::keyDown[SDL_SCANCODE_M]) {
-    setNextState(StateEngine::STATE_MENU);
+  if (asw::input::keyboard.down[SDL_SCANCODE_M]) {
+    setNextState(ProgramState::STATE_MENU);
   }
 
   // Click buttons
-  if (collision(MouseListener::x, MouseListener::x, -1, 200, MouseListener::y,
-                MouseListener::y, 0, 920) ||
-      KeyListener::keyDown[SDL_SCANCODE_LEFT]) {
-    if (MouseListener::mouse_pressed & 1 ||
-        KeyListener::keyDown[SDL_SCANCODE_LEFT]) {
-      if (difficulty > 4) {
-        difficulty -= 2;
-        asw::sound::play(click);
-        updateScores();
-      }
-    }
-  } else if (collision(MouseListener::x, MouseListener::x, 1080, 1280,
-                       MouseListener::y, MouseListener::y, 0, 920) ||
-             KeyListener::keyDown[SDL_SCANCODE_RIGHT]) {
-    if (MouseListener::mouse_pressed & 1 ||
-        KeyListener::keyDown[SDL_SCANCODE_RIGHT]) {
-      if (difficulty < 10) {
-        difficulty += 2;
-        asw::sound::play(click);
-        updateScores();
-      }
-    }
-  }
+  levelSelectLeft.update();
+  levelSelectRight.update();
 }
 
 void HighScores::draw() {
   // Background
-  asw::draw::sprite(levelSelect, 0, 0);
+  asw::draw::sprite(background, 0, 0);
 
   // Titles
-  if (difficulty == 4) {
+  if (difficulty == GameDifficulty::EASY) {
     asw::draw::textCenter(font, "Easy", 640, 100,
                           asw::util::makeColor(0, 0, 0));
-  } else if (difficulty == 6) {
+  } else if (difficulty == GameDifficulty::MEDIUM) {
     asw::draw::textCenter(font, "Medium", 640, 100,
                           asw::util::makeColor(0, 0, 0));
-  } else if (difficulty == 8) {
+  } else if (difficulty == GameDifficulty::HARD) {
     asw::draw::textCenter(font, "Hard", 640, 100,
                           asw::util::makeColor(0, 0, 0));
-  } else if (difficulty == 10) {
+  } else if (difficulty == GameDifficulty::EXTREME) {
     asw::draw::textCenter(font, "EXTREME", 640, 100,
                           asw::util::makeColor(0, 0, 0));
   }
 
   // Click buttons
-  if (collision(MouseListener::x, MouseListener::x, -1, 200, MouseListener::y,
-                MouseListener::y, 0, 920) ||
-      KeyListener::keyDown[SDL_SCANCODE_LEFT]) {
-    asw::draw::sprite(levelSelectLeft, 0, 0);
-  } else if (collision(MouseListener::x, MouseListener::x, 1080, 1280,
-                       MouseListener::y, MouseListener::y, 0, 920) ||
-             KeyListener::keyDown[SDL_SCANCODE_RIGHT]) {
-    asw::draw::sprite(levelSelectRight, 1080, 0);
-  }
+  levelSelectLeft.draw();
+  levelSelectRight.draw();
 
   // Draw scores
-  for (int i = 0; i < 10; i++) {
-    std::string name = scores[i][0];
-    asw::draw::text(font, name.c_str(), 400, (i * 50) + 200,
-                    asw::util::makeColor(0, 0, 0));
+  auto& scores = scoreManager.getScores();
 
-    name = scores[i][1];
+  int drawY = 200;
+  for (const auto& [name, score] : scores) {
+    asw::draw::text(font, name, 400, drawY, asw::util::makeColor(0, 0, 0));
 
     // TODO: Impl text right
-    asw::draw::text(font, name.c_str(), 860, (i * 50) + 200,
+    asw::draw::text(font, std::to_string(score), 860, drawY,
                     asw::util::makeColor(0, 0, 0));
+
+    drawY += 50;
   }
 }
 
 void HighScores::updateScores() {
   std::string fileName = "";
 
-  if (difficulty == 4) {
+  if (difficulty == GameDifficulty::EASY) {
     fileName = "assets/data/highscores_easy.dat";
-  } else if (difficulty == 6) {
+  } else if (difficulty == GameDifficulty::MEDIUM) {
     fileName = "assets/data/highscores_medium.dat";
-  } else if (difficulty == 8) {
+  } else if (difficulty == GameDifficulty::HARD) {
     fileName = "assets/data/highscores_hard.dat";
-  } else if (difficulty == 10) {
+  } else if (difficulty == GameDifficulty::EXTREME) {
     fileName = "assets/data/highscores_extreme.dat";
   }
 
-  std::ifstream read(fileName.c_str());
-
-  if (!read.is_open()) {
-    asw::util::abortOnError("Could not open file: " + fileName);
-  }
-
-  for (int i = 0; i < 10; i++) {
-    for (int t = 0; t < 2; t++) {
-      read >> scores[i][t];
-    }
-  }
-
-  read.close();
+  scoreManager.loadScores(fileName);
 }

@@ -1,106 +1,98 @@
 #include "Game.h"
 
-#include <asw/util/KeyListener.h>
-#include <asw/util/MouseListener.h>
-#include <fstream>
+#include <algorithm>
+#include <chrono>
+#include <random>
 
 #include "globals.h"
 
-void Game::init() {
-  background = asw::load::texture("assets/img/backgrounds/background.png");
+GameDifficulty Game::difficulty = GameDifficulty::EASY;
 
-  font = asw::load::font("assets/fonts/ariblk.ttf", 24);
+void Game::init() {
+  auto screenSize = asw::display::getLogicalSize();
+
+  background =
+      asw::assets::loadTexture("assets/img/backgrounds/background.png");
+
+  font = asw::assets::loadFont("assets/fonts/ariblk.ttf", 24);
+
+  nameBox =
+      InputBox(screenSize.x / 2 - 100, screenSize.y / 2 - 50, 200, 100, font);
+
+  int dimension = 0;
+  switch (difficulty) {
+    case GameDifficulty::EASY:
+      dimension = 4;
+      break;
+    case GameDifficulty::MEDIUM:
+      dimension = 6;
+      break;
+    case GameDifficulty::HARD:
+      dimension = 8;
+      break;
+    case GameDifficulty::EXTREME:
+      dimension = 10;
+      break;
+  }
 
   // Creates 10 blank cards
-  for (int i = 0; i < difficulty; i++) {
-    for (int t = 0; t < difficulty; t++) {
-      card newCard(i * 800 / difficulty + 250, t * 800 / difficulty + 80, -1,
-                   700 / difficulty);
-      cards.push_back(newCard);
+  for (int i = 0; i < dimension; i++) {
+    for (int t = 0; t < dimension; t++) {
+      cards.emplace_back(-1, 700 / dimension);
     }
   }
 
   // Adds types in sets of 2
-  for (unsigned int i = 0; i < cards.size() / 2; i++) {
+  for (unsigned int i = 0; i < cards.size() - 1; i += 2) {
     int cardType = random(0, 5);
     cards.at(i).setType(cardType);
-
-    bool placeFound = false;
-    while (!placeFound) {
-      int newPlace = random(cards.size() / 2, cards.size() - 1);
-      if (cards.at(newPlace).getType() == -1) {
-        cards.at(newPlace).setType(cardType);
-        placeFound = true;
-      }
-    }
+    cards.at(i + 1).setType(cardType);
   }
+
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+
+  std::shuffle(cards.begin(), cards.end(), std::default_random_engine(seed));
+
+  // Sets positions
+  for (unsigned int i = 0; i < cards.size(); i++) {
+    cards.at(i).setPosition(250 + (i % dimension) * 800 / dimension,
+                            80 + (i / dimension) * 800 / dimension);
+  }
+
+  auto scoreFile = getScoresFile();
+  scoreManager.loadScores(scoreFile);
 }
 
 void Game::update() {
   // End game
-  if (cards.size() == 0) {
-    // // Name input
-    // if (keypressed()) {
-    //   int newkey = readkey();
-    //   char ASCII = newkey & 0xff;
-    //   char scancode = newkey >> 8;
+  if (cards.empty()) {
+    nameBox.update();
 
-    //   // a character key was pressed; add it to the string
-    //   if (ASCII >= 32 && ASCII <= 126 && edittext.length() < 25 &&
-    //       scancode != KEY_SPACE) {
-    //     // add the new char
-    //     iter = edittext.insert(iter, ASCII);
-    //     // increment both the caret and the iterator
-    //     iter++;
-    //   }
-    //   // some other, "special" key was pressed; handle it here
-    //   else {
-    //     if (scancode == KEY_DEL) {
-    //       if (iter != edittext.end()) {
-    //         iter = edittext.erase(iter);
-    //       }
-    //     }
-    //     if (scancode == KEY_BACKSPACE) {
-    //       if (iter != edittext.begin()) {
-    //         iter--;
-    //         iter = edittext.erase(iter);
-    //       }
-    //     }
-    //     if (scancode == KEY_RIGHT) {
-    //       if (iter != edittext.end()) {
-    //         iter++;
-    //       }
-    //     }
-    //     if (scancode == KEY_LEFT) {
-    //       if (iter != edittext.begin()) {
-    //         iter--;
-    //       }
-    //     }
-    //     if (scancode == KEY_ENTER) {
-    //       fade_out(16);
-    //       gameScreen = MENU;
-    //       addScore(edittext);
-    //       draw(false);
-    //       fade_in(16);
-    //     }
-    //   }
-    // }
+    if (asw::input::keyboard.pressed[SDL_SCANCODE_RETURN]) {
+      auto scoreFile = getScoresFile();
+      scoreManager.addScore(nameBox.getValue(), moves);
+      scoreManager.saveScores(scoreFile);
+      setNextState(ProgramState::STATE_MENU);
+    }
   }
   // Go to menu
-  else if (KeyListener::keyPressed[SDL_SCANCODE_M]) {
-    setNextState(StateEngine::STATE_MENU);
+  else if (asw::input::keyboard.pressed[SDL_SCANCODE_M]) {
+    setNextState(ProgramState::STATE_MENU);
   }
 
   // Card logic
   // Count number of flipped cards
   numberSelected = 0;
-  for (unsigned int i = 0; i < cards.size(); i++)
-    if (cards.at(i).getSelected())
+  for (const auto& card : cards) {
+    if (card.getSelected()) {
       numberSelected++;
+    }
+  }
 
   // Do card logic
-  for (unsigned int i = 0; i < cards.size(); i++)
-    cards.at(i).logic();
+  for (auto& card : cards) {
+    card.logic();
+  }
 
   // Find the placing of the two flipped cards
   if (numberSelected > 0) {
@@ -111,11 +103,9 @@ void Game::update() {
       }
     }
     for (unsigned int i = 0; i < cards.size(); i++) {
-      if (cards.at(i).getSelected()) {
-        if (cardSelected1 != i) {
-          cardSelected2 = i;
-          break;
-        }
+      if (cards.at(i).getSelected() && cardSelected1 != i) {
+        cardSelected2 = i;
+        break;
       }
     }
   }
@@ -147,66 +137,36 @@ void Game::draw() {
   asw::draw::sprite(background, 0, 0);
 
   // Show Moves
-  asw::draw::primRectFill(15, 15, 200, 70, asw::util::makeColor(255, 255, 255));
+  asw::draw::rectFill(15, 15, 200, 70, asw::util::makeColor(255, 255, 255));
   asw::draw::text(font, "Moves:" + std::to_string(moves), 20, 20,
                   asw::util::makeColor(0, 0, 0));
 
   // Draw cards
-  for (unsigned int i = 0; i < cards.size(); i++) {
-    cards.at(i).draw();
+  for (const auto& card : cards) {
+    card.draw();
   }
 
-  if (cards.size() == 0) {
-    // // Create gui
-    // textprintf_centre_ex(font, 640, 310, asw::util::makeColor(0, 0, 0), -1,
-    //                      "Congratulations! Enter Your Name");
+  if (cards.empty()) {
+    // Create gui
+    asw::draw::textCenter(font, "Congratulations! Enter Your Name", 640, 310,
+                          asw::util::makeColor(0, 0, 0));
 
-    // // Input rectangle
-    // asw::draw::primRectFill(400, 408, 892, 452, asw::util::makeColor(0, 0,
-    // 0)); asw::draw::primRectFill(402, 410, 890, 450,
-    //                         asw::util::makeColor(255, 255, 255));
-
-    // // Output the string to the screen
-    // textout_ex(font, edittext.c_str(), 410, 410, asw::util::makeColor(0, 0,
-    // 0),
-    //            -1);
-
-    // // Draw the caret
-    // vline(text_length(font, edittext.c_str()) + 410, 412, 448,
-    //       asw::util::makeColor(0, 0, 0));
+    nameBox.draw();
   }
 }
 
-void Game::addScore(const std::string& name) {
-  // Update table
-  // updateScores(difficulty);
+std::string Game::getScoresFile() {
+  std::string fileName = "";
 
-  // Update List
-  for (int i = 0; i < 10; i++) {
-    if (moves < atoi(scores[i][1].c_str())) {
-      for (int t = 9; t > i; t--) {
-        scores[t][1] = scores[t - 1][1];
-        scores[t][0] = scores[t - 1][0];
-      }
-      scores[i][1] = convertInt(moves);
-      if (name == "") {
-        scores[i][0] = "Anonymous";
-      } else {
-        scores[i][0] = name;
-      }
-
-      break;
-    }
+  if (difficulty == GameDifficulty::EASY) {
+    fileName = "assets/data/highscores_easy.dat";
+  } else if (difficulty == GameDifficulty::MEDIUM) {
+    fileName = "assets/data/highscores_medium.dat";
+  } else if (difficulty == GameDifficulty::HARD) {
+    fileName = "assets/data/highscores_hard.dat";
+  } else if (difficulty == GameDifficulty::EXTREME) {
+    fileName = "assets/data/highscores_extreme.dat";
   }
 
-  // Save Scores
-  std::ofstream saveFile;
-  // saveFile.open(fileName.c_str());
-
-  for (int i = 0; i < 10; i++) {
-    for (int t = 0; t < 2; t++) {
-      saveFile << scores[i][t] << " ";
-    }
-  }
-  saveFile.close();
+  return fileName;
 }

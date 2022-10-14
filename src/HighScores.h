@@ -3,32 +3,36 @@
 
 #include <asw/asw.h>
 
+#include "GameDifficulty.h"
 #include "State.h"
-#include "button.h"
+#include "ui/Button.h"
+#include "util/ScoreManager.h"
 
 // Intro screen of game
 class HighScores : public State {
  public:
-  explicit HighScores(StateEngine& engine) : State(engine) {}
+  using State::State;
 
-  virtual void init() override;
-  virtual void update() override;
-  virtual void draw() override;
-  virtual void cleanup() override{};
-
-  void updateScores();
+  void init() override;
+  void update() override;
+  void draw() override;
+  void cleanup() override{};
 
  private:
-  asw::Texture background_menu;
-  asw::Texture levelSelect;
-  asw::Texture levelSelectLeft;
-  asw::Texture levelSelectRight;
+  void updateScores();
+
+  asw::Texture background;
 
   asw::Font font;
 
   asw::Sample click;
 
-  int difficulty{4};
+  GameDifficulty difficulty{GameDifficulty::EASY};
+
+  ScoreManager scoreManager;
+
+  Button levelSelectLeft;
+  Button levelSelectRight;
 };
 
 #endif  // HIGH_SCORES_H
