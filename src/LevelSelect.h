@@ -2,6 +2,7 @@
 #define LEVEL_SELECT_H
 
 #include <asw/asw.h>
+#include <map>
 
 #include "GameDifficulty.h"
 #include "State.h"
@@ -21,7 +22,7 @@ class LevelSelect : public State {
 
  private:
   asw::Texture background;
-  asw::Texture difficultyImages[4];
+  std::map<GameDifficulty, asw::Texture> difficultyImages;
 
   asw::Font font;
 

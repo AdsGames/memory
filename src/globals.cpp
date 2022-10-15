@@ -1,14 +1,11 @@
 #include "globals.h"
 
 #include <random>
-#include <sstream>
 
 // Random device
 std::mt19937 rng(time(nullptr));
 
 int numberSelected = 0;
-int cardSelected1 = 0;
-int cardSelected2 = 0;
 
 // Function to check for collision
 bool collision(float xMin1,

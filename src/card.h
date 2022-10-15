@@ -3,6 +3,8 @@
 
 #include <asw/asw.h>
 #include <time.h>
+#include <map>
+#include <string>
 
 #include "globals.h"
 
@@ -27,8 +29,9 @@ class card {
   bool getOffScreen() const;
 
  private:
-  asw::Texture faceImage;
-  asw::Texture backImage;
+  static std::map<int, std::string> cardAssets;
+  static std::map<int, asw::Texture> faceImages;
+  static asw::Texture backImage;
 
   asw::Sample cardFlip;
   asw::Sample whoosh;

@@ -3,8 +3,6 @@
 #include <string>
 #include <vector>
 
-#include "globals.h"
-
 void HighScores::init() {
   background =
       asw::assets::loadTexture("assets/img/backgrounds/background.png");
@@ -84,7 +82,6 @@ void HighScores::draw() {
   for (const auto& [name, score] : scores) {
     asw::draw::text(font, name, 400, drawY, asw::util::makeColor(0, 0, 0));
 
-    // TODO: Impl text right
     asw::draw::text(font, std::to_string(score), 860, drawY,
                     asw::util::makeColor(0, 0, 0));
 

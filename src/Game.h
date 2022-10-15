@@ -38,6 +38,9 @@ class Game : public State {
   InputBox nameBox;
 
   ScoreManager scoreManager;
+
+  int cardSelected1{0};
+  int cardSelected2{0};
 };
 
 #endif  // GAME_H

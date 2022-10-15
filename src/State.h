@@ -37,7 +37,7 @@ class StateEngine {
   void update();
 
   // Draw
-  void draw();
+  void draw() const;
 
   // Set next state
   void setNextState(const ProgramState state);

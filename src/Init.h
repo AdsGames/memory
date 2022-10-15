@@ -10,7 +10,9 @@ class Init : public State {
   void init() override;
   void update() override;
   void draw() override;
-  void cleanup() override;
+  void cleanup(){
+      // Nothing to do
+  };
 };
 
 #endif  // INIT_H

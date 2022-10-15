@@ -3,19 +3,18 @@
 #include <string>
 
 #include "Game.h"
-#include "globals.h"
 
 void LevelSelect::init() {
   background =
       asw::assets::loadTexture("assets/img/backgrounds/background.png");
 
-  difficultyImages[0] =
+  difficultyImages[GameDifficulty::EASY] =
       asw::assets::loadTexture("assets/img/selector/easy.png");
-  difficultyImages[1] =
+  difficultyImages[GameDifficulty::MEDIUM] =
       asw::assets::loadTexture("assets/img/selector/medium.png");
-  difficultyImages[2] =
+  difficultyImages[GameDifficulty::HARD] =
       asw::assets::loadTexture("assets/img/selector/hard.png");
-  difficultyImages[3] =
+  difficultyImages[GameDifficulty::EXTREME] =
       asw::assets::loadTexture("assets/img/selector/extreme.png");
 
   font = asw::assets::loadFont("assets/fonts/ariblk.ttf", 24);
@@ -76,13 +75,5 @@ void LevelSelect::draw() {
   levelSelectRight.draw();
 
   // Draw difficulty demos
-  if (difficulty == GameDifficulty::EASY) {
-    asw::draw::sprite(difficultyImages[0], 250, 185);
-  } else if (difficulty == GameDifficulty::MEDIUM) {
-    asw::draw::sprite(difficultyImages[1], 250, 185);
-  } else if (difficulty == GameDifficulty::HARD) {
-    asw::draw::sprite(difficultyImages[2], 250, 185);
-  } else if (difficulty == GameDifficulty::EXTREME) {
-    asw::draw::sprite(difficultyImages[3], 250, 185);
-  }
+  asw::draw::sprite(difficultyImages[GameDifficulty::EASY], 250, 185);
 }

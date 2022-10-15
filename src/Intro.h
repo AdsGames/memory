@@ -6,8 +6,6 @@
 
 #include "State.h"
 
-#define INTRO_FRAMES 84
-
 // Intro screen of game
 class Intro : public State {
  public:

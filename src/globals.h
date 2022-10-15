@@ -1,11 +1,7 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include <string>
-
 extern int numberSelected;
-extern int cardSelected1;
-extern int cardSelected2;
 
 // Function to check for collision
 bool collision(float xMin1,
@@ -17,7 +13,7 @@ bool collision(float xMin1,
                float yMin2,
                float yMax2);
 
-// Random number generator. Use int random(lowest,highest);
+// Random number generator.
 int random(int low, int high);
 
 #endif

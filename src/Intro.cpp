@@ -3,8 +3,6 @@
 #include <string>
 #include <vector>
 
-#include "globals.h"
-
 void Intro::init() {
   intro = asw::assets::loadTexture("assets/img/intro.png");
   timer.Start();
