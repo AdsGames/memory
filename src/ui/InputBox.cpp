@@ -69,37 +69,31 @@ void InputBox::update() {
     }
   }
 
-  if (type == "text") {
-    if (lastKey >= 4 && lastKey <= 29) {
-      if (asw::input::keyboard.down[SDL_SCANCODE_LSHIFT] ||
-          asw::input::keyboard.down[SDL_SCANCODE_RSHIFT]) {
-        text.insert(text.begin() + textIterator, 'A' - 4 + lastKey);
-      } else {
-        text.insert(text.begin() + textIterator, 'a' - 4 + lastKey);
-      }
-
-      textIterator++;
+  if (type == "text" && lastKey >= 4 && lastKey <= 29) {
+    if (asw::input::keyboard.down[SDL_SCANCODE_LSHIFT] ||
+        asw::input::keyboard.down[SDL_SCANCODE_RSHIFT]) {
+      text.insert(text.begin() + textIterator, 'A' - 4 + lastKey);
+    } else {
+      text.insert(text.begin() + textIterator, 'a' - 4 + lastKey);
     }
+
+    textIterator++;
   }
 
   // some other, "special" key was pressed; handle it here
-  if (asw::input::keyboard.pressed[SDL_SCANCODE_BACKSPACE]) {
-    if (textIterator != 0) {
-      textIterator--;
-      text.erase(text.begin() + textIterator);
-    }
+  if (asw::input::keyboard.pressed[SDL_SCANCODE_BACKSPACE] &&
+      textIterator != 0) {
+    textIterator--;
+    text.erase(text.begin() + textIterator);
   }
 
-  if (asw::input::keyboard.pressed[SDL_SCANCODE_RIGHT]) {
-    if (textIterator != text.size()) {
-      textIterator++;
-    }
+  if (asw::input::keyboard.pressed[SDL_SCANCODE_RIGHT] &&
+      textIterator != text.size()) {
+    textIterator++;
   }
 
-  if (asw::input::keyboard.pressed[SDL_SCANCODE_LEFT]) {
-    if (textIterator != 0) {
-      textIterator--;
-    }
+  if (asw::input::keyboard.pressed[SDL_SCANCODE_LEFT] && textIterator != 0) {
+    textIterator--;
   }
 }
 

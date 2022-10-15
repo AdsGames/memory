@@ -2,8 +2,6 @@
 
 #include <asw/asw.h>
 
-#include "globals.h"
-
 void Init::init() {
   asw::display::setTitle("Setting up");
 
@@ -11,8 +9,6 @@ void Init::init() {
 
   asw::display::setTitle("Memory");
 }
-
-void Init::cleanup() {}
 
 void Init::update() {
   setNextState(ProgramState::STATE_INTRO);

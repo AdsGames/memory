@@ -3,8 +3,6 @@
 #include <string>
 #include <vector>
 
-#include "globals.h"
-
 void Menu::init() {
   background =
       asw::assets::loadTexture("assets/img/backgrounds/background_menu.png");

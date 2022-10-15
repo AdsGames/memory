@@ -1,7 +1,5 @@
 #include "Button.h"
 
-#include "../globals.h"
-
 Button::Button() : Button(0, 0) {}
 
 Button::Button(int x, int y) : x(x), y(y) {}

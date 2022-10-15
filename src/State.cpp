@@ -14,7 +14,7 @@
  *****************/
 
 // Draw
-void StateEngine::draw() {
+void StateEngine::draw() const {
   if (state) {
     // Clear screen
     SDL_RenderClear(asw::display::renderer);

@@ -2,14 +2,27 @@
 
 #include <string>
 
+asw::Texture card::backImage{nullptr};
+std::map<int, asw::Texture> card::faceImages{};
+std::map<int, std::string> card::cardAssets = {
+    {-1, "assets/img/cards/card_large_flip_-1.png"},
+    {0, "assets/img/cards/card_large_flip_0.png"},
+    {1, "assets/img/cards/card_large_flip_1.png"},
+    {2, "assets/img/cards/card_large_flip_2.png"},
+    {3, "assets/img/cards/card_large_flip_3.png"},
+    {4, "assets/img/cards/card_large_flip_4.png"},
+    {5, "assets/img/cards/card_large_flip_5.png"}};
+
 // Constructor
 card::card(int type, int size)
     : width(size), height(size), animationWidth(width), type(type) {
-  std::string fileName =
-      "assets/img/cards/card_large_flip_" + std::to_string(type) + ".png";
+  if (backImage == nullptr) {
+    backImage = asw::assets::loadTexture("assets/img/cards/card_large.png");
 
-  backImage = asw::assets::loadTexture("assets/img/cards/card_large.png");
-  faceImage = asw::assets::loadTexture(fileName.c_str());
+    for (auto const& [key, val] : cardAssets) {
+      faceImages[key] = asw::assets::loadTexture(val);
+    }
+  }
 
   cardFlip = asw::assets::loadSample("assets/sfx/card_flip.wav");
   whoosh = asw::assets::loadSample("assets/sfx/whoosh.wav");
@@ -41,9 +54,6 @@ void card::match() {
 // Set card to new type
 void card::setType(int type) {
   this->type = type;
-  std::string fileName =
-      "assets/img/cards/card_large_flip_" + std::to_string(type) + ".png";
-  faceImage = asw::assets::loadTexture(fileName);
 }
 
 // If selected
@@ -120,7 +130,7 @@ void card::logic() {
 
 // Draw
 void card::draw() const {
-  auto& texture = flipped ? faceImage : backImage;
+  auto& texture = flipped ? faceImages[type] : backImage;
 
   asw::draw::stretchSprite(texture, x + (width - animationWidth) / 2, y,
                            animationWidth, height);
