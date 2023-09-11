@@ -1,5 +1,6 @@
 #include "globals.h"
 
+#include <time.h>
 #include <random>
 
 // Random device

@@ -15,11 +15,7 @@ add_executable (${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic)
 
-target_include_directories(
-  ${PROJECT_NAME} PRIVATE
-  lib/asw
-)
-
+add_subdirectory(lib/asw)
 
 # Find libs
 if(NOT EMSCRIPTEN)
@@ -58,12 +54,13 @@ if(EMSCRIPTEN)
     -sSDL2_IMAGE_FORMATS=["png"] 
     -sDEMANGLE_SUPPORT=1
     -sTOTAL_MEMORY=512MB
+    asw
   )
   set_target_properties(
     ${PROJECT_NAME} 
     PROPERTIES 
     LINK_FLAGS
-    "--preload-file ${CMAKE_CURRENT_LIST_DIR}/assets@/assets --use-preload-plugins"
+    "--preload-file ${CMAKE_CURRENT_LIST_DIR}/assets@/assets --use-preload-plugins --shell-file ${CMAKE_CURRENT_LIST_DIR}/index.html"
   )
 
 # Run of the mill executable
@@ -72,14 +69,15 @@ else(EMSCRIPTEN)
     target_link_libraries(${PROJECT_NAME} -lmingw32)
   endif(MINGW)
   target_link_libraries(
-    ${PROJECT_NAME} 
+    ${PROJECT_NAME}
     -lm 
-    ${SDL_MAIN_LIBRARY} 
-    ${SDL_LIBRARY} 
-    ${SDL_MIXER_LIBRARY} 
-    ${SDL_IMAGE_LIBRARY} 
-    ${SDL_TTF_LIBRARY} 
-    ${SDL_GFX_LIBRARY} 
+    ${SDL_MAIN_LIBRARY}
+    ${SDL_LIBRARY}
+    ${SDL_MIXER_LIBRARY}
+    ${SDL_IMAGE_LIBRARY}
+    ${SDL_TTF_LIBRARY}
+    ${SDL_GFX_LIBRARY}
+    asw
   )
 endif(EMSCRIPTEN)
 
