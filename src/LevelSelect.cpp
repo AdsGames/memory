@@ -75,5 +75,5 @@ void LevelSelect::draw() {
   levelSelectRight.draw();
 
   // Draw difficulty demos
-  asw::draw::sprite(difficultyImages[GameDifficulty::EASY], 250, 185);
+  asw::draw::sprite(difficultyImages[difficulty], 250, 185);
 }
