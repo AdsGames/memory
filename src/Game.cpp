@@ -9,11 +9,19 @@
 
 GameDifficulty Game::difficulty = GameDifficulty::EASY;
 
-std::map<GameDifficulty, std::string> Game::SCORE_FILES{
-    {GameDifficulty::EASY, "assets/data/highscores_easy.dat"},
-    {GameDifficulty::MEDIUM, "assets/data/highscores_medium.dat"},
-    {GameDifficulty::HARD, "assets/data/highscores_hard.dat"},
-    {GameDifficulty::EXTREME, "assets/data/highscores_extreme.dat"}};
+std::map<GameDifficulty, DifficultyConfig> Game::DIFFICULTY_CONFIG{
+    {GameDifficulty::EASY,
+     DifficultyConfig{.highscoresFile = "assets/data/highscores_easy.dat",
+                      .dimension = 4}},
+    {GameDifficulty::MEDIUM,
+     DifficultyConfig{.highscoresFile = "assets/data/highscores_medium.dat",
+                      .dimension = 6}},
+    {GameDifficulty::HARD,
+     DifficultyConfig{.highscoresFile = "assets/data/highscores_hard.dat",
+                      .dimension = 8}},
+    {GameDifficulty::EXTREME,
+     DifficultyConfig{.highscoresFile = "assets/data/highscores_extreme.dat",
+                      .dimension = 10}}};
 
 void Game::init() {
   auto screenSize = asw::display::getLogicalSize();
@@ -26,26 +34,18 @@ void Game::init() {
   nameBox =
       InputBox(screenSize.x / 2 - 100, screenSize.y / 2 - 50, 200, 100, font);
 
-  int dimension = 0;
-  switch (difficulty) {
-    case GameDifficulty::EASY:
-      dimension = 4;
-      break;
-    case GameDifficulty::MEDIUM:
-      dimension = 6;
-      break;
-    case GameDifficulty::HARD:
-      dimension = 8;
-      break;
-    case GameDifficulty::EXTREME:
-      dimension = 10;
-      break;
-  }
+  auto& config = DIFFICULTY_CONFIG[difficulty];
 
+  this->initCards(config);
+
+  scoreManager.loadScores(config.highscoresFile);
+}
+
+void Game::initCards(const DifficultyConfig& config) {
   // Creates 10 blank cards
-  for (int i = 0; i < dimension; i++) {
-    for (int t = 0; t < dimension; t++) {
-      cards.emplace_back(-1, 700 / dimension);
+  for (int i = 0; i < config.dimension; i++) {
+    for (int t = 0; t < config.dimension; t++) {
+      cards.emplace_back(-1, 700 / config.dimension);
     }
   }
 
@@ -62,42 +62,60 @@ void Game::init() {
 
   // Sets positions
   for (unsigned int i = 0; i < cards.size(); i++) {
-    cards.at(i).setPosition(250 + (i % dimension) * 800 / dimension,
-                            80 + (i / dimension) * 800 / dimension);
+    cards.at(i).setPosition(
+        250 + (i % config.dimension) * 800 / config.dimension,
+        80 + (i / config.dimension) * 800 / config.dimension);
   }
-
-  scoreManager.loadScores(SCORE_FILES[difficulty]);
 }
 
 void Game::update() {
   // End game
   if (cards.empty()) {
-    nameBox.update();
-
-    if (asw::input::keyboard.pressed[SDL_SCANCODE_RETURN]) {
-      scoreManager.addScore(nameBox.getValue(), moves);
-      scoreManager.saveScores(SCORE_FILES[difficulty]);
-      setNextState(ProgramState::STATE_MENU);
-    }
+    this->endgameUpdate();
   }
   // Go to menu
   else if (asw::input::keyboard.pressed[SDL_SCANCODE_M]) {
     setNextState(ProgramState::STATE_MENU);
   }
 
-  // Card logic
-  // Count number of flipped cards
-  cardSelected1 = 0;
-  cardSelected2 = 0;
-  numberSelected = 0;
+  this->eraseOffScreenCards();
+  this->calculateSelectedCards();
 
+  // Do card logic
+  for (auto& card : cards) {
+    card.update();
+  }
+
+  if (numberSelected == 2) {
+    this->matchCards();
+  }
+}
+
+void Game::endgameUpdate() {
+  nameBox.update();
+
+  if (asw::input::keyboard.pressed[SDL_SCANCODE_RETURN]) {
+    auto& config = DIFFICULTY_CONFIG[difficulty];
+    scoreManager.addScore(nameBox.getValue(), moves);
+    scoreManager.saveScores(config.highscoresFile);
+    setNextState(ProgramState::STATE_MENU);
+  }
+}
+
+void Game::eraseOffScreenCards() {
   // Erase off screen
   cards.erase(
       std::remove_if(cards.begin(), cards.end(),
                      [](const auto& card) { return card.isOffScreen(); }),
       cards.end());
+}
 
-  // Do card logic
+void Game::calculateSelectedCards() {
+  // Count number of flipped cards
+  cardSelected1 = 0;
+  cardSelected2 = 0;
+  numberSelected = 0;
+
   for (unsigned int i = 0; i < cards.size(); i++) {
     const auto& card = cards.at(i);
 
@@ -111,26 +129,28 @@ void Game::update() {
       }
     }
   }
+}
 
-  for (auto& card : cards) {
-    card.update();
+void Game::matchCards() {
+  if (cardSelected1 == cardSelected2) {
+    return;
   }
 
-  if (numberSelected == 2) {
-    auto& card1 = cards.at(cardSelected1);
-    auto& card2 = cards.at(cardSelected2);
+  auto& card1 = cards.at(cardSelected1);
+  auto& card2 = cards.at(cardSelected2);
 
-    if (card1.isAnimationDone() && card2.isAnimationDone()) {
-      if (card1.getType() == card2.getType()) {
-        card1.match();
-        card2.match();
-      }
-
-      card1.deselect();
-      card2.deselect();
-      moves++;
-    }
+  if (!card1.isAnimationDone() || !card2.isAnimationDone()) {
+    return;
   }
+
+  if (card1.getType() == card2.getType()) {
+    card1.match();
+    card2.match();
+  }
+
+  card1.deselect();
+  card2.deselect();
+  moves++;
 }
 
 void Game::draw() {

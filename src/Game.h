@@ -12,6 +12,11 @@
 #include "ui/InputBox.h"
 #include "util/ScoreManager.h"
 
+struct DifficultyConfig {
+  std::string highscoresFile;
+  int dimension;
+};
+
 // Intro screen of game
 class Game : public State {
  public:
@@ -27,7 +32,13 @@ class Game : public State {
   static GameDifficulty difficulty;
 
  private:
-  static std::map<GameDifficulty, std::string> SCORE_FILES;
+  static std::map<GameDifficulty, DifficultyConfig> DIFFICULTY_CONFIG;
+
+  void initCards(const DifficultyConfig& config);
+  void eraseOffScreenCards();
+  void matchCards();
+  void calculateSelectedCards();
+  void endgameUpdate();
 
   asw::Texture background;
   asw::Font font;

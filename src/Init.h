@@ -10,7 +10,7 @@ class Init : public State {
   void init() override;
   void update() override;
   void draw() override;
-  void cleanup(){
+  void cleanup() override{
       // Nothing to do
   };
 };

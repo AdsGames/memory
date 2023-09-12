@@ -4,9 +4,7 @@
 
 void Init::init() {
   asw::display::setTitle("Setting up");
-
   asw::display::setIcon("assets/img/icon.png");
-
   asw::display::setTitle("Memory");
 }
 
