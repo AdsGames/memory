@@ -1,10 +1,10 @@
-#include "card.h"
+#include "Card.h"
 
 #include <string>
 
-asw::Texture card::backImage{nullptr};
-std::map<int, asw::Texture> card::faceImages{};
-std::map<int, std::string> card::cardAssets = {
+asw::Texture Card::backImage{nullptr};
+std::map<int, asw::Texture> Card::faceImages{};
+std::map<int, std::string> Card::cardAssets = {
     {-1, "assets/img/cards/card_large_flip_-1.png"},
     {0, "assets/img/cards/card_large_flip_0.png"},
     {1, "assets/img/cards/card_large_flip_1.png"},
@@ -14,7 +14,7 @@ std::map<int, std::string> card::cardAssets = {
     {5, "assets/img/cards/card_large_flip_5.png"}};
 
 // Constructor
-card::card(int type, int size)
+Card::Card(int type, int size)
     : width(size), height(size), animationWidth(width), type(type) {
   if (backImage == nullptr) {
     backImage = asw::assets::loadTexture("assets/img/cards/card_large.png");
@@ -26,17 +26,18 @@ card::card(int type, int size)
 
   cardFlip = asw::assets::loadSample("assets/sfx/card_flip.wav");
   whoosh = asw::assets::loadSample("assets/sfx/whoosh.wav");
+  animationTime.start();
 }
 
 // Set position
-void card::setPosition(int x, int y) {
+void Card::setPosition(int x, int y) {
   this->x = x;
   this->y = y;
 }
 
 // Set selected
-void card::deselect() {
-  timeClicked = clock();
+void Card::deselect() {
+  animationTime.reset();
   selected = false;
   asw::sound::play(cardFlip);
   flipped = true;
@@ -44,7 +45,7 @@ void card::deselect() {
 }
 
 // Set matched
-void card::match() {
+void Card::match() {
   if (!matched) {
     matched = true;
     asw::sound::play(whoosh, 127);
@@ -52,32 +53,32 @@ void card::match() {
 }
 
 // Set card to new type
-void card::setType(int type) {
+void Card::setType(int type) {
   this->type = type;
 }
 
 // If selected
-bool card::getSelected() const {
+bool Card::isSelected() const {
   return selected;
 }
 
 // Return matched
-bool card::getMatched() const {
+bool Card::getMatched() const {
   return matched;
 }
 
 // Return type
-int card::getType() const {
+int Card::getType() const {
   return type;
 }
 
 // Return animationDone
-bool card::getAnimationDone() const {
+bool Card::isAnimationDone() const {
   return animationDone;
 }
 
 // Return if off the screen
-bool card::getOffScreen() const {
+bool Card::isOffScreen() const {
   auto size = asw::util::getTextureSize(backImage);
   auto screenSize = asw::display::getLogicalSize();
   return x < 0 - size.x || x > screenSize.x + size.x || y < 0 - size.y ||
@@ -85,13 +86,13 @@ bool card::getOffScreen() const {
 }
 
 // Logic
-void card::logic() {
+void Card::logic() {
   auto screenSize = asw::display::getLogicalSize();
 
   if (!selected && asw::input::mouse.pressed[1] && numberSelected < 2 &&
       collision(asw::input::mouse.x, asw::input::mouse.x, x, x + width,
                 asw::input::mouse.y, asw::input::mouse.y, y, y + height)) {
-    timeClicked = clock();
+    animationTime.reset();
     asw::sound::play(cardFlip);
     selected = true;
     flipped = false;
@@ -104,20 +105,21 @@ void card::logic() {
   }
 
   if (!animationDone) {
-    auto timeElapsed = clock() - timeClicked;
-    auto interpolation =
-        static_cast<float>(timeElapsed) / static_cast<float>(CARD_FLIP_TIME_MS);
+    auto timeElapsed =
+        animationTime.getElapsedTime<std::chrono::milliseconds>();
+
+    auto interpolation = timeElapsed / CARD_FLIP_TIME_MS;
     auto widthMult = (cos(2.0f * M_PI * interpolation) + 1.0f) / 2.0f;
     animationWidth = static_cast<int>(static_cast<float>(width) * widthMult);
 
     if (selected) {
-      if (!flipped && timeElapsed > CARD_FLIP_TIME_MS / 2) {
+      if (!flipped && timeElapsed > CARD_FLIP_TIME_MS / 2.0) {
         flipped = true;
       } else if (flipped && timeElapsed > CARD_FLIP_TIME_MS) {
         animationDone = true;
       }
     } else {
-      if (flipped && timeElapsed > CARD_FLIP_TIME_MS / 2) {
+      if (flipped && timeElapsed > CARD_FLIP_TIME_MS / 2.0) {
         flipped = false;
       } else if (!flipped && timeElapsed > CARD_FLIP_TIME_MS) {
         animationDone = true;
@@ -129,7 +131,7 @@ void card::logic() {
 }
 
 // Draw
-void card::draw() const {
+void Card::draw() const {
   auto& texture = flipped ? faceImages[type] : backImage;
 
   asw::draw::stretchSprite(texture, x + (width - animationWidth) / 2, y,

@@ -2,17 +2,18 @@
 #define CARD_H
 
 #include <asw/asw.h>
+#include <asw/util/Timer.h>
 #include <time.h>
 #include <map>
 #include <string>
 
 #include "globals.h"
 
-const clock_t CARD_FLIP_TIME_MS = 300;
+const double CARD_FLIP_TIME_MS = 250.0;
 
-class card {
+class Card {
  public:
-  card(int type, int size);
+  Card(int type, int size);
 
   void logic();
   void draw() const;
@@ -22,11 +23,11 @@ class card {
   void match();
   void setType(int type);
 
-  bool getSelected() const;
+  bool isSelected() const;
   bool getMatched() const;
   int getType() const;
-  bool getAnimationDone() const;
-  bool getOffScreen() const;
+  bool isAnimationDone() const;
+  bool isOffScreen() const;
 
  private:
   static std::map<int, std::string> cardAssets;
@@ -58,8 +59,8 @@ class card {
   // True when a match is made
   bool matched{false};
 
-  // First one around on the animation back
-  clock_t timeClicked{0};
+  // Animation timer
+  Timer animationTime{};
 };
 
 #endif

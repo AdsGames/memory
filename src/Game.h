@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
+#include "Card.h"
 #include "GameDifficulty.h"
 #include "State.h"
-#include "card.h"
 #include "ui/InputBox.h"
 #include "util/ScoreManager.h"
 
@@ -33,7 +33,7 @@ class Game : public State {
 
   int moves{0};
 
-  std::vector<card> cards;
+  std::vector<Card> cards;
 
   InputBox nameBox;
 
