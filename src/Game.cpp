@@ -2,11 +2,18 @@
 
 #include <algorithm>
 #include <chrono>
+#include <map>
 #include <random>
 
 #include "globals.h"
 
 GameDifficulty Game::difficulty = GameDifficulty::EASY;
+
+std::map<GameDifficulty, std::string> Game::SCORE_FILES{
+    {GameDifficulty::EASY, "assets/data/highscores_easy.dat"},
+    {GameDifficulty::MEDIUM, "assets/data/highscores_medium.dat"},
+    {GameDifficulty::HARD, "assets/data/highscores_hard.dat"},
+    {GameDifficulty::EXTREME, "assets/data/highscores_extreme.dat"}};
 
 void Game::init() {
   auto screenSize = asw::display::getLogicalSize();
@@ -49,7 +56,7 @@ void Game::init() {
     cards.at(i + 1).setType(cardType);
   }
 
-  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  auto seed = std::chrono::system_clock::now().time_since_epoch().count();
 
   std::shuffle(cards.begin(), cards.end(), std::default_random_engine(seed));
 
@@ -59,8 +66,7 @@ void Game::init() {
                             80 + (i / dimension) * 800 / dimension);
   }
 
-  auto scoreFile = getScoresFile();
-  scoreManager.loadScores(scoreFile);
+  scoreManager.loadScores(SCORE_FILES[difficulty]);
 }
 
 void Game::update() {
@@ -69,9 +75,8 @@ void Game::update() {
     nameBox.update();
 
     if (asw::input::keyboard.pressed[SDL_SCANCODE_RETURN]) {
-      auto scoreFile = getScoresFile();
       scoreManager.addScore(nameBox.getValue(), moves);
-      scoreManager.saveScores(scoreFile);
+      scoreManager.saveScores(SCORE_FILES[difficulty]);
       setNextState(ProgramState::STATE_MENU);
     }
   }
@@ -82,51 +87,47 @@ void Game::update() {
 
   // Card logic
   // Count number of flipped cards
+  cardSelected1 = 0;
+  cardSelected2 = 0;
   numberSelected = 0;
-  for (const auto& card : cards) {
-    if (card.getSelected()) {
-      numberSelected++;
-    }
-  }
+
+  // Erase off screen
+  cards.erase(
+      std::remove_if(cards.begin(), cards.end(),
+                     [](const auto& card) { return card.isOffScreen(); }),
+      cards.end());
 
   // Do card logic
-  for (auto& card : cards) {
-    card.logic();
-  }
+  for (unsigned int i = 0; i < cards.size(); i++) {
+    const auto& card = cards.at(i);
 
-  // Find the placing of the two flipped cards
-  if (numberSelected > 0) {
-    for (unsigned int i = 0; i < cards.size(); i++) {
-      if (cards.at(i).getSelected()) {
+    if (card.isSelected()) {
+      if (numberSelected == 0) {
         cardSelected1 = i;
-        break;
-      }
-    }
-    for (unsigned int i = 0; i < cards.size(); i++) {
-      if (cards.at(i).getSelected() && cardSelected1 != i) {
+        numberSelected = 1;
+      } else if (numberSelected == 1) {
         cardSelected2 = i;
-        break;
+        numberSelected = 2;
       }
     }
   }
 
-  if (numberSelected == 2 && cards.at(cardSelected1).getAnimationDone() &&
-      cards.at(cardSelected2).getAnimationDone() &&
-      cards.at(cardSelected1).getSelected() &&
-      cards.at(cardSelected2).getSelected()) {
-    if (cards.at(cardSelected1).getType() ==
-        cards.at(cardSelected2).getType()) {
-      cards.at(cardSelected1).match();
-      cards.at(cardSelected2).match();
-      if (cards.at(cardSelected1).getOffScreen() &&
-          cards.at(cardSelected2).getOffScreen()) {
-        cards.erase(cards.begin() + cardSelected1);
-        cards.erase(cards.begin() + cardSelected2 - 1);
-        moves++;
+  for (auto& card : cards) {
+    card.update();
+  }
+
+  if (numberSelected == 2) {
+    auto& card1 = cards.at(cardSelected1);
+    auto& card2 = cards.at(cardSelected2);
+
+    if (card1.isAnimationDone() && card2.isAnimationDone()) {
+      if (card1.getType() == card2.getType()) {
+        card1.match();
+        card2.match();
       }
-    } else {
-      cards.at(cardSelected1).deselect();
-      cards.at(cardSelected2).deselect();
+
+      card1.deselect();
+      card2.deselect();
       moves++;
     }
   }
@@ -153,20 +154,4 @@ void Game::draw() {
 
     nameBox.draw();
   }
-}
-
-std::string Game::getScoresFile() const {
-  std::string fileName = "";
-
-  if (difficulty == GameDifficulty::EASY) {
-    fileName = "assets/data/highscores_easy.dat";
-  } else if (difficulty == GameDifficulty::MEDIUM) {
-    fileName = "assets/data/highscores_medium.dat";
-  } else if (difficulty == GameDifficulty::HARD) {
-    fileName = "assets/data/highscores_hard.dat";
-  } else if (difficulty == GameDifficulty::EXTREME) {
-    fileName = "assets/data/highscores_extreme.dat";
-  }
-
-  return fileName;
 }
