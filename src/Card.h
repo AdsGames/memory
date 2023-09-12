@@ -15,7 +15,7 @@ class Card {
  public:
   Card(int type, int size);
 
-  void logic();
+  void update();
   void draw() const;
 
   void setPosition(int x, int y);
@@ -24,14 +24,13 @@ class Card {
   void setType(int type);
 
   bool isSelected() const;
-  bool getMatched() const;
-  int getType() const;
   bool isAnimationDone() const;
   bool isOffScreen() const;
+  int getType() const;
 
  private:
-  static std::map<int, std::string> cardAssets;
-  static std::map<int, asw::Texture> faceImages;
+  static std::map<int, std::string> CARD_ASSETS;
+  static std::map<int, asw::Texture> FACE_IMAGES;
   static asw::Texture backImage;
 
   asw::Sample cardFlip;

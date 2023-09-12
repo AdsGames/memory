@@ -1,7 +1,14 @@
 #include "HighScores.h"
 
+#include <map>
 #include <string>
 #include <vector>
+
+std::map<GameDifficulty, std::string> HighScores::SCORE_FILES{
+    {GameDifficulty::EASY, "assets/data/highscores_easy.dat"},
+    {GameDifficulty::MEDIUM, "assets/data/highscores_medium.dat"},
+    {GameDifficulty::HARD, "assets/data/highscores_hard.dat"},
+    {GameDifficulty::EXTREME, "assets/data/highscores_extreme.dat"}};
 
 void HighScores::init() {
   background =
@@ -90,17 +97,6 @@ void HighScores::draw() {
 }
 
 void HighScores::updateScores() {
-  std::string fileName = "";
-
-  if (difficulty == GameDifficulty::EASY) {
-    fileName = "assets/data/highscores_easy.dat";
-  } else if (difficulty == GameDifficulty::MEDIUM) {
-    fileName = "assets/data/highscores_medium.dat";
-  } else if (difficulty == GameDifficulty::HARD) {
-    fileName = "assets/data/highscores_hard.dat";
-  } else if (difficulty == GameDifficulty::EXTREME) {
-    fileName = "assets/data/highscores_extreme.dat";
-  }
-
+  auto fileName = SCORE_FILES[difficulty];
   scoreManager.loadScores(fileName);
 }

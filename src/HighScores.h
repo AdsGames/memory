@@ -2,6 +2,7 @@
 #define HIGH_SCORES_H
 
 #include <asw/asw.h>
+#include <map>
 
 #include "GameDifficulty.h"
 #include "State.h"
@@ -21,6 +22,8 @@ class HighScores : public State {
   };
 
  private:
+  static std::map<GameDifficulty, std::string> SCORE_FILES;
+
   void updateScores();
 
   asw::Texture background;

@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <asw/asw.h>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -26,7 +27,7 @@ class Game : public State {
   static GameDifficulty difficulty;
 
  private:
-  std::string getScoresFile() const;
+  static std::map<GameDifficulty, std::string> SCORE_FILES;
 
   asw::Texture background;
   asw::Font font;
@@ -39,8 +40,8 @@ class Game : public State {
 
   ScoreManager scoreManager;
 
-  int cardSelected1{0};
-  int cardSelected2{0};
+  unsigned int cardSelected1{0};
+  unsigned int cardSelected2{0};
 };
 
 #endif  // GAME_H

@@ -3,8 +3,8 @@
 #include <string>
 
 asw::Texture Card::backImage{nullptr};
-std::map<int, asw::Texture> Card::faceImages{};
-std::map<int, std::string> Card::cardAssets = {
+std::map<int, asw::Texture> Card::FACE_IMAGES{};
+std::map<int, std::string> Card::CARD_ASSETS = {
     {-1, "assets/img/cards/card_large_flip_-1.png"},
     {0, "assets/img/cards/card_large_flip_0.png"},
     {1, "assets/img/cards/card_large_flip_1.png"},
@@ -19,8 +19,8 @@ Card::Card(int type, int size)
   if (backImage == nullptr) {
     backImage = asw::assets::loadTexture("assets/img/cards/card_large.png");
 
-    for (auto const& [key, val] : cardAssets) {
-      faceImages[key] = asw::assets::loadTexture(val);
+    for (auto const& [key, val] : CARD_ASSETS) {
+      FACE_IMAGES[key] = asw::assets::loadTexture(val);
     }
   }
 
@@ -62,11 +62,6 @@ bool Card::isSelected() const {
   return selected;
 }
 
-// Return matched
-bool Card::getMatched() const {
-  return matched;
-}
-
 // Return type
 int Card::getType() const {
   return type;
@@ -86,7 +81,7 @@ bool Card::isOffScreen() const {
 }
 
 // Logic
-void Card::logic() {
+void Card::update() {
   auto screenSize = asw::display::getLogicalSize();
 
   if (!selected && asw::input::mouse.pressed[1] && numberSelected < 2 &&
@@ -132,7 +127,7 @@ void Card::logic() {
 
 // Draw
 void Card::draw() const {
-  auto& texture = flipped ? faceImages[type] : backImage;
+  auto& texture = flipped ? FACE_IMAGES[type] : backImage;
 
   asw::draw::stretchSprite(texture, x + (width - animationWidth) / 2, y,
                            animationWidth, height);

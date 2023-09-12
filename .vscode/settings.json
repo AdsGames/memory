@@ -71,7 +71,23 @@
     "locale": "cpp",
     "mutex": "cpp",
     "optional": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "any": "cpp",
+    "codecvt": "cpp",
+    "condition_variable": "cpp",
+    "forward_list": "cpp",
+    "list": "cpp",
+    "set": "cpp",
+    "unordered_set": "cpp",
+    "source_location": "cpp",
+    "format": "cpp",
+    "future": "cpp",
+    "iomanip": "cpp",
+    "semaphore": "cpp",
+    "span": "cpp",
+    "stdfloat": "cpp",
+    "stop_token": "cpp",
+    "thread": "cpp"
   },
   "sonarlint.pathToCompileCommands": "${workspaceFolder}\\compile_commands.json"
 }
