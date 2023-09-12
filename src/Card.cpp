@@ -127,7 +127,7 @@ void Card::update() {
 
 // Draw
 void Card::draw() const {
-  auto& texture = flipped ? FACE_IMAGES[type] : backImage;
+  const auto& texture = flipped ? FACE_IMAGES[type] : backImage;
 
   asw::draw::stretchSprite(texture, x + (width - animationWidth) / 2, y,
                            animationWidth, height);

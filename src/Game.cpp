@@ -99,7 +99,7 @@ void Game::update() {
 
   // Do card logic
   for (unsigned int i = 0; i < cards.size(); i++) {
-    auto& card = cards.at(i);
+    const auto& card = cards.at(i);
 
     if (card.isSelected()) {
       if (numberSelected == 0) {

@@ -97,6 +97,5 @@ void HighScores::draw() {
 }
 
 void HighScores::updateScores() {
-  auto fileName = SCORE_FILES[difficulty];
-  scoreManager.loadScores(fileName);
+  scoreManager.loadScores(SCORE_FILES[difficulty]);
 }
