@@ -1,5 +1,4 @@
-#ifndef MENU_H
-#define MENU_H
+#pragma once
 
 #include <asw/asw.h>
 
@@ -7,16 +6,15 @@
 #include "ui/Button.h"
 
 // Intro screen of game
-class Menu : public State {
+class Menu : public asw::scene::Scene<States> {
  public:
-  using State::State;
+  using asw::scene::Scene<States>::Scene;
 
   void init() override;
-  void update() override;
+
+  void update(float deltaTime) override;
+
   void draw() override;
-  void cleanup() override{
-      // Nothing to do
-  };
 
  private:
   asw::Texture background;
@@ -25,5 +23,3 @@ class Menu : public State {
   Button buttonHighscores;
   Button buttonQuit;
 };
-
-#endif  // MENU_H

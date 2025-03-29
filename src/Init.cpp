@@ -8,8 +8,10 @@ void Init::init() {
   asw::display::setTitle("Memory");
 }
 
-void Init::update() {
-  setNextState(ProgramState::STATE_INTRO);
+void Init::update(float deltaTime) {
+  Scene::update(deltaTime);
+
+  sceneManager.setNextScene(States::Intro);
 }
 
 void Init::draw() {

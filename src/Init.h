@@ -1,18 +1,16 @@
-#ifndef INIT_H
-#define INIT_H
+#pragma once
+
+#include <asw/asw.h>
 
 #include "State.h"
 
-class Init : public State {
+class Init : public asw::scene::Scene<States> {
  public:
-  using State::State;
+  using asw::scene::Scene<States>::Scene;
 
   void init() override;
-  void update() override;
-  void draw() override;
-  void cleanup() override{
-      // Nothing to do
-  };
-};
 
-#endif  // INIT_H
+  void update(float deltaTime) override;
+
+  void draw() override;
+};

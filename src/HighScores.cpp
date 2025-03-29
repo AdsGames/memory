@@ -48,10 +48,12 @@ void HighScores::init() {
   updateScores();
 }
 
-void HighScores::update() {
+void HighScores::update(float deltaTime) {
+  Scene::update(deltaTime);
+
   // Go to menu
-  if (asw::input::keyboard.down[SDL_SCANCODE_M]) {
-    setNextState(ProgramState::STATE_MENU);
+  if (asw::input::wasKeyPressed(asw::input::Key::ESCAPE)) {
+    sceneManager.setNextScene(States::Menu);
   }
 
   // Click buttons
@@ -61,20 +63,20 @@ void HighScores::update() {
 
 void HighScores::draw() {
   // Background
-  asw::draw::sprite(background, 0, 0);
+  asw::draw::sprite(background, asw::Vec2<float>(0, 0));
 
   // Titles
   if (difficulty == GameDifficulty::EASY) {
-    asw::draw::textCenter(font, "Easy", 640, 100,
+    asw::draw::textCenter(font, "Easy", asw::Vec2<float>(640, 100),
                           asw::util::makeColor(0, 0, 0));
   } else if (difficulty == GameDifficulty::MEDIUM) {
-    asw::draw::textCenter(font, "Medium", 640, 100,
+    asw::draw::textCenter(font, "Medium", asw::Vec2<float>(640, 100),
                           asw::util::makeColor(0, 0, 0));
   } else if (difficulty == GameDifficulty::HARD) {
-    asw::draw::textCenter(font, "Hard", 640, 100,
+    asw::draw::textCenter(font, "Hard", asw::Vec2<float>(640, 100),
                           asw::util::makeColor(0, 0, 0));
   } else if (difficulty == GameDifficulty::EXTREME) {
-    asw::draw::textCenter(font, "EXTREME", 640, 100,
+    asw::draw::textCenter(font, "EXTREME", asw::Vec2<float>(640, 100),
                           asw::util::makeColor(0, 0, 0));
   }
 
@@ -87,9 +89,10 @@ void HighScores::draw() {
 
   int drawY = 200;
   for (const auto& [name, score] : scores) {
-    asw::draw::text(font, name, 400, drawY, asw::util::makeColor(0, 0, 0));
+    asw::draw::text(font, name, asw::Vec2<float>(400, drawY),
+                    asw::util::makeColor(0, 0, 0));
 
-    asw::draw::text(font, std::to_string(score), 860, drawY,
+    asw::draw::text(font, std::to_string(score), asw::Vec2<float>(860, drawY),
                     asw::util::makeColor(0, 0, 0));
 
     drawY += 50;

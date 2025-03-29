@@ -37,9 +37,8 @@ void InputBox::update() {
       int closest = width;
 
       for (unsigned int i = 0; i <= text.length(); i++) {
-        int textSize = asw::util::getTextSize(font, text.substr(0, i)).x;
-
-        int distance = abs(textSize + x + 6 - asw::input::mouse.x);
+        const int textSize = asw::util::getTextSize(font, text.substr(0, i)).x;
+        const int distance = abs(textSize + x + 6 - asw::input::mouse.x);
 
         if (distance < closest) {
           textIterator = i;
@@ -70,8 +69,8 @@ void InputBox::update() {
   }
 
   if (type == "text" && lastKey >= 4 && lastKey <= 29) {
-    if (asw::input::keyboard.down[SDL_SCANCODE_LSHIFT] ||
-        asw::input::keyboard.down[SDL_SCANCODE_RSHIFT]) {
+    if (asw::input::wasKeyPressed(asw::input::Key::LSHIFT) ||
+        asw::input::wasKeyPressed(asw::input::Key::RSHIFT)) {
       text.insert(text.begin() + textIterator, 'A' - 4 + lastKey);
     } else {
       text.insert(text.begin() + textIterator, 'a' - 4 + lastKey);
@@ -81,43 +80,48 @@ void InputBox::update() {
   }
 
   // some other, "special" key was pressed; handle it here
-  if (asw::input::keyboard.pressed[SDL_SCANCODE_BACKSPACE] &&
+  if (asw::input::wasKeyPressed(asw::input::Key::BACKSPACE) &&
       textIterator != 0) {
     textIterator--;
     text.erase(text.begin() + textIterator);
   }
 
-  if (asw::input::keyboard.pressed[SDL_SCANCODE_RIGHT] &&
+  if (asw::input::wasKeyPressed(asw::input::Key::RIGHT) &&
       textIterator != text.size()) {
     textIterator++;
   }
 
-  if (asw::input::keyboard.pressed[SDL_SCANCODE_LEFT] && textIterator != 0) {
+  if (asw::input::wasKeyPressed(asw::input::Key::LEFT) && textIterator != 0) {
     textIterator--;
   }
 }
 
 // Draw box
 void InputBox::draw() const {
-  asw::draw::rectFill(x, y, width, height, asw::util::makeColor(12, 12, 12));
+  asw::draw::rectFill(asw::Quad<float>(x, y, width, height),
+                      asw::util::makeColor(12, 12, 12));
 
   asw::Color col = (hover() || focused) ? asw::util::makeColor(230, 230, 230)
                                         : asw::util::makeColor(245, 245, 245);
 
   if (focused) {
-    asw::draw::rectFill(x + 2, y + 2, width - 4, height - 4, col);
+    asw::draw::rectFill(asw::Quad<float>(x + 2, y + 2, width - 4, height - 4),
+                        col);
   } else {
-    asw::draw::rectFill(x + 1, y + 1, width - 2, height - 2, col);
+    asw::draw::rectFill(asw::Quad<float>(x + 1, y + 1, width - 2, height - 2),
+                        col);
   }
 
   // Output the string to the screen
-  asw::draw::text(font, text, x + 6, y, asw::util::makeColor(22, 22, 22));
+  asw::draw::text(font, text, asw::Vec2<float>(x + 6, y),
+                  asw::util::makeColor(22, 22, 22));
 
   // Draw the caret
   if (focused) {
     int textSize = asw::util::getTextSize(font, text.substr(0, textIterator)).x;
 
-    asw::draw::rectFill(textSize + x + 6, y + 8, 1, height - 16,
-                        asw::util::makeColor(0, 0, 0));
+    asw::draw::rectFill(
+        asw::Quad<float>(textSize + x + 6, y + 8, 1, height - 16),
+        asw::util::makeColor(0, 0, 0));
   }
 }

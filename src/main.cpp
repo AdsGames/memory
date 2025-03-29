@@ -6,98 +6,29 @@
 // Includes
 #include <asw/asw.h>
 
-#include <chrono>
-#include <memory>
-
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#include <emscripten/html5.h>
-#endif
-
 // For state engine
+#include "Game.h"
+#include "HighScores.h"
+#include "Init.h"
+#include "Intro.h"
+#include "LevelSelect.h"
+#include "Menu.h"
 #include "State.h"
 
-using namespace std::chrono_literals;
-using namespace std::chrono;
-constexpr nanoseconds timestep(16ms);
-
-// State engine
-std::unique_ptr<StateEngine> state;
-
-// Functions
-void setup();
-void draw();
-void update();
-
-// FPS system
-int fps = 0;
-int frames_done = 0;
-
-// Setup game
-void setup() {
-  // Load allegro library
+// Main function*/
+int main() {
   asw::core::init(1280, 960);
 
-  state = std::make_unique<StateEngine>();
-}
+  auto app = asw::scene::SceneManager<States>();
+  app.registerScene<Init>(States::Init, app);
+  app.registerScene<Intro>(States::Intro, app);
+  app.registerScene<Menu>(States::Menu, app);
+  app.registerScene<LevelSelect>(States::LevelSelect, app);
+  app.registerScene<Game>(States::Game, app);
+  app.registerScene<HighScores>(States::HighScores, app);
+  app.setNextScene(States::Init);
 
-// Update
-void update() {
-  // Update core
-  asw::core::update();
-
-  // Do state logic
-  state->update();
-
-  // Handle exit
-  if (state->getStateId() == ProgramState::STATE_EXIT) {
-    asw::core::exit = true;
-  }
-}
-
-// Do state rendering
-void draw() {
-  state->draw();
-}
-
-// Loop (emscripten compatibility)
-#ifdef __EMSCRIPTEN__
-void loop() {
-  update();
-  draw();
-}
-#endif
-
-// Main function*/
-int main(int argc, char* argv[]) {
-  // Setup basic functionality
-  setup();
-
-  // Set the current state ID
-  state->setNextState(ProgramState::STATE_INIT);
-
-#ifdef __EMSCRIPTEN__
-  emscripten_set_main_loop(loop, 0, 1);
-#else
-
-  using clock = high_resolution_clock;
-  nanoseconds lag(0ns);
-  auto time_start = clock::now();
-
-  while (!asw::input::keyboard.down[SDL_SCANCODE_ESCAPE] && !asw::core::exit) {
-    auto delta_time = clock::now() - time_start;
-    time_start = clock::now();
-    lag += duration_cast<nanoseconds>(delta_time);
-
-    while (lag >= timestep) {
-      lag -= timestep;
-      update();
-    }
-
-    draw();
-    frames_done++;
-  }
-#endif
+  app.start();
 
   return 0;
 }

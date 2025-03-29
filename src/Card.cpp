@@ -85,8 +85,9 @@ void Card::update() {
   auto screenSize = asw::display::getLogicalSize();
 
   if (!selected && asw::input::mouse.pressed[1] && numberSelected < 2 &&
-      collision(asw::input::mouse.x, asw::input::mouse.x, x, x + width,
-                asw::input::mouse.y, asw::input::mouse.y, y, y + height)) {
+      collision((int)asw::input::mouse.x, (int)asw::input::mouse.x, x,
+                x + width, (int)asw::input::mouse.y, (int)asw::input::mouse.y,
+                y, y + height)) {
     animationTime.reset();
     asw::sound::play(cardFlip);
     selected = true;
@@ -129,6 +130,7 @@ void Card::update() {
 void Card::draw() const {
   const auto& texture = flipped ? FACE_IMAGES[type] : backImage;
 
-  asw::draw::stretchSprite(texture, x + (width - animationWidth) / 2, y,
-                           animationWidth, height);
+  asw::draw::stretchSprite(texture,
+                           asw::Quad<float>(x + (width - animationWidth) / 2, y,
+                                            animationWidth, height));
 }

@@ -6,15 +6,18 @@ on:
       - main
     tags:
       - v*
-
-env:
-  EM_VERSION: "latest"
-  EM_CACHE_FOLDER: "emsdk-cache"
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
   pages: write
   id-token: write
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -25,21 +28,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
+        uses: actions/checkout@v4
 
       - name: Setup cache
-        id: cache-system-libraries
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
-          path: ${{env.EM_CACHE_FOLDER}}
-          key: ${{env.EM_VERSION}}-${{ runner.os }}
+          path: "_deps"
+          key: deps-${{ runner.os }}
 
-      - uses: mymindstorm/setup-emsdk@v11
+      - uses: mymindstorm/setup-emsdk@v14
         with:
-          version: ${{env.EM_VERSION}}
-          actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
+          version: 4.0.6
+          actions-cache-folder: "emsdk-cache"
+
+      - name: Download ports
+        run: |
+          embuilder build harfbuzz
 
       - name: Run CMake
         run: emcmake cmake -G "Unix Makefiles" .
@@ -47,14 +51,15 @@ jobs:
       - name: Make
         run: emmake make -j4
 
-      - uses: actions/upload-pages-artifact@v1
+      - uses: actions/upload-pages-artifact@v3
+        if: github.ref == 'refs/heads/main'
         with:
           path: ./build
 
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
 
       - name: Deploy to A.D.S. Games
         if: startsWith(github.ref, 'refs/tags/v')

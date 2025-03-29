@@ -1,5 +1,4 @@
-#ifndef GAME_H
-#define GAME_H
+#pragma once
 
 #include <asw/asw.h>
 #include <map>
@@ -18,16 +17,15 @@ struct DifficultyConfig {
 };
 
 // Intro screen of game
-class Game : public State {
+class Game : public asw::scene::Scene<States> {
  public:
-  using State::State;
+  using asw::scene::Scene<States>::Scene;
 
   void init() override;
-  void update() override;
+
+  void update(float deltaTime) override;
+
   void draw() override;
-  void cleanup() override{
-      // Nothing to do
-  };
 
   static GameDifficulty difficulty;
 
@@ -54,5 +52,3 @@ class Game : public State {
   unsigned int cardSelected1{0};
   unsigned int cardSelected2{0};
 };
-
-#endif  // GAME_H

@@ -47,10 +47,12 @@ void LevelSelect::init() {
   });
 }
 
-void LevelSelect::update() {
+void LevelSelect::update(float deltaTime) {
+  Scene::update(deltaTime);
+
   // Go to menu
-  if (asw::input::keyboard.down[SDL_SCANCODE_M]) {
-    setNextState(ProgramState::STATE_MENU);
+  if (asw::input::wasKeyPressed(asw::input::Key::ESCAPE)) {
+    sceneManager.setNextScene(States::Menu);
   }
 
   levelSelectLeft.update();
@@ -58,22 +60,23 @@ void LevelSelect::update() {
 
   // Click buttons
   if ((asw::input::mouse.pressed[1] &&
-       collision(asw::input::mouse.x, asw::input::mouse.x, 250, 1050,
-                 asw::input::mouse.y, asw::input::mouse.y, 185, 785)) ||
-      asw::input::keyboard.down[SDL_SCANCODE_RETURN]) {
+       collision((int)asw::input::mouse.x, (int)asw::input::mouse.x, 250, 1050,
+                 (int)asw::input::mouse.y, (int)asw::input::mouse.y, 185,
+                 785)) ||
+      asw::input::wasKeyPressed(asw::input::Key::RETURN)) {
     Game::difficulty = difficulty;
-    setNextState(ProgramState::STATE_GAME);
+    sceneManager.setNextScene(States::Game);
   }
 }
 
 void LevelSelect::draw() {
   // Background
-  asw::draw::sprite(background, 0, 0);
+  asw::draw::sprite(background, asw::Vec2<float>(0, 0));
 
   // Buttons
   levelSelectLeft.draw();
   levelSelectRight.draw();
 
   // Draw difficulty demos
-  asw::draw::sprite(difficultyImages[difficulty], 250, 185);
+  asw::draw::sprite(difficultyImages[difficulty], asw::Vec2<float>(250, 185));
 }

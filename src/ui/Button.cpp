@@ -40,11 +40,8 @@ int Button::getY() const {
 
 void Button::draw() const {
   if (isHovering() && imageHover) {
-    asw::draw::sprite(imageHover, x, y);
+    asw::draw::sprite(imageHover, asw::Vec2<float>(x, y));
   } else if (!isHovering() && image) {
-    asw::draw::sprite(image, x, y);
-  } else {
-    asw::draw::rectFill(x, y, x + width, y + height,
-                        asw::util::makeColor(60, 60, 60));
+    asw::draw::sprite(image, asw::Vec2<float>(x, y));
   }
 }
