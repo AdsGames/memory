@@ -8,14 +8,16 @@ void Intro::init() {
   timer.start();
 }
 
-void Intro::update() {
+void Intro::update(float deltaTime) {
+  Scene::update(deltaTime);
+
   auto time = timer.getElapsedTime<std::chrono::milliseconds>();
 
   if (time >= 3000 || asw::input::keyboard.anyPressed) {
-    setNextState(ProgramState::STATE_MENU);
+    sceneManager.setNextScene(States::Menu);
   }
 }
 
 void Intro::draw() {
-  asw::draw::sprite(intro, 0, 0);
+  asw::draw::sprite(intro, asw::Vec2<float>(0, 0));
 }

@@ -1,5 +1,4 @@
-#ifndef HIGH_SCORES_H
-#define HIGH_SCORES_H
+#pragma once
 
 #include <asw/asw.h>
 #include <map>
@@ -10,16 +9,15 @@
 #include "util/ScoreManager.h"
 
 // Intro screen of game
-class HighScores : public State {
+class HighScores : public asw::scene::Scene<States> {
  public:
-  using State::State;
+  using asw::scene::Scene<States>::Scene;
 
   void init() override;
-  void update() override;
+
+  void update(float deltaTime) override;
+
   void draw() override;
-  void cleanup() override{
-      // Nothing to do
-  };
 
  private:
   static std::map<GameDifficulty, std::string> SCORE_FILES;
@@ -39,5 +37,3 @@ class HighScores : public State {
   Button levelSelectLeft;
   Button levelSelectRight;
 };
-
-#endif  // HIGH_SCORES_H

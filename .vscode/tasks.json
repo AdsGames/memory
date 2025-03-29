@@ -6,7 +6,7 @@
     {
       "label": "Build",
       "type": "shell",
-      "detail": "Run and build jim farm",
+      "detail": "Run and build memory",
       "command": "cmake --build . && cd build && ./Memory",
       "windows": {
         "command": "cmake --build . && cd build && Memory.exe"

@@ -21,22 +21,24 @@ void Menu::init() {
 
   // Button actions
   buttonStart.setOnClick(
-      [this]() { setNextState(ProgramState::STATE_LEVEL_SELECT); });
+      [this]() { sceneManager.setNextScene(States::LevelSelect); });
 
   buttonHighscores.setOnClick(
-      [this]() { setNextState(ProgramState::STATE_HIGH_SCORES); });
+      [this]() { sceneManager.setNextScene(States::HighScores); });
 
-  buttonQuit.setOnClick([this]() { setNextState(ProgramState::STATE_EXIT); });
+  buttonQuit.setOnClick([this]() { asw::core::exit = true; });
 }
 
-void Menu::update() {
+void Menu::update(float deltaTime) {
+  Scene::update(deltaTime);
+
   buttonStart.update();
   buttonHighscores.update();
   buttonQuit.update();
 }
 
 void Menu::draw() {
-  asw::draw::sprite(background, 0, 0);
+  asw::draw::sprite(background, asw::Vec2<float>(0, 0));
   buttonStart.draw();
   buttonHighscores.draw();
   buttonQuit.draw();

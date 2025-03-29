@@ -68,14 +68,16 @@ void Game::initCards(const DifficultyConfig& config) {
   }
 }
 
-void Game::update() {
+void Game::update(float deltaTime) {
+  Scene::update(deltaTime);
+
   // End game
   if (cards.empty()) {
     this->endgameUpdate();
   }
   // Go to menu
-  else if (asw::input::keyboard.pressed[SDL_SCANCODE_M]) {
-    setNextState(ProgramState::STATE_MENU);
+  else if (asw::input::wasKeyPressed(asw::input::Key::ESCAPE)) {
+    sceneManager.setNextScene(States::Menu);
   }
 
   this->eraseOffScreenCards();
@@ -94,11 +96,11 @@ void Game::update() {
 void Game::endgameUpdate() {
   nameBox.update();
 
-  if (asw::input::keyboard.pressed[SDL_SCANCODE_RETURN]) {
+  if (asw::input::wasKeyPressed(asw::input::Key::RETURN)) {
     auto& config = DIFFICULTY_CONFIG[difficulty];
     scoreManager.addScore(nameBox.getValue(), moves);
     scoreManager.saveScores(config.highscoresFile);
-    setNextState(ProgramState::STATE_MENU);
+    sceneManager.setNextScene(States::Menu);
   }
 }
 
@@ -155,12 +157,13 @@ void Game::matchCards() {
 
 void Game::draw() {
   // Background
-  asw::draw::sprite(background, 0, 0);
+  asw::draw::sprite(background, asw::Vec2<float>(0, 0));
 
   // Show Moves
-  asw::draw::rectFill(15, 15, 200, 70, asw::util::makeColor(255, 255, 255));
-  asw::draw::text(font, "Moves:" + std::to_string(moves), 20, 20,
-                  asw::util::makeColor(0, 0, 0));
+  asw::draw::rectFill(asw::Quad<float>(15, 15, 200, 70),
+                      asw::util::makeColor(255, 255, 255));
+  asw::draw::text(font, "Moves:" + std::to_string(moves),
+                  asw::Vec2<float>(20, 20), asw::util::makeColor(0, 0, 0));
 
   // Draw cards
   for (const auto& card : cards) {
@@ -169,7 +172,8 @@ void Game::draw() {
 
   if (cards.empty()) {
     // Create gui
-    asw::draw::textCenter(font, "Congratulations! Enter Your Name", 640, 310,
+    asw::draw::textCenter(font, "Congratulations! Enter Your Name",
+                          asw::Vec2<float>(640, 310),
                           asw::util::makeColor(0, 0, 0));
 
     nameBox.draw();
