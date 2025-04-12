@@ -38,7 +38,7 @@ void InputBox::update() {
 
       for (unsigned int i = 0; i <= text.length(); i++) {
         const int textSize = asw::util::getTextSize(font, text.substr(0, i)).x;
-        const int distance = abs(textSize + x + 6 - asw::input::mouse.x);
+        const int distance = std::abs(textSize + x + 6 - asw::input::mouse.x);
 
         if (distance < closest) {
           textIterator = i;

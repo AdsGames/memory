@@ -12,16 +12,16 @@ Match all the cards on the table in four different difficulties. Compete against
 
 ## Setup
 
-### Build
+### CMake
 
 ```bash
-cmake .
-make
+cmake -B build .
+cmake --build ./build
 ```
 
 ### Build Emscripten
 
 ```bash
-emcmake cmake .
-make
+emcmake cmake -B build .
+cmake --build ./build
 ```

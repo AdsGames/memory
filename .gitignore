@@ -56,3 +56,4 @@ build.ninja
 Testing/
 compile_commands.json
 _deps/
+!/cmake/get_cpm.cmake

@@ -1,31 +1,35 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.24)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 
-include(FetchContent)
+# ---- Project ----
 
-project (Memory)
+project (
+  Memory
+  VERSION 0.1.0
+  LANGUAGES CXX
+)
 
-# Source code
+# ---- Dependencies ----
+
+include(cmake/get_cpm.cmake)
+CPMAddPackage("gh:adsgames/asw@0.5.7")
+
+# ---- Source code ----
+
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h)
 
-add_executable (${PROJECT_NAME} ${SOURCES} ${HEADERS})
+# ---- Executable ----
 
+add_executable (${PROJECT_NAME} ${SOURCES} ${HEADERS})
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic)
 
-FetchContent_Declare(
-  asw
-  GIT_REPOSITORY https://github.com/adsgames/asw.git
-  GIT_TAG        v0.5.4
-  GIT_SHALLOW    TRUE
-)
-FetchContent_MakeAvailable(asw)
+# ---- Libs ----
 
-# Link Libs
 if(MINGW)
   target_link_libraries(${PROJECT_NAME} -lmingw32)
 endif(MINGW)
@@ -35,7 +39,8 @@ target_link_libraries(
   asw
 )
 
-# Emscripten support
+# ---- Emscripten ----
+
 if(EMSCRIPTEN)
   set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "index")
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
@@ -55,5 +60,7 @@ if(EMSCRIPTEN)
   )
 endif(EMSCRIPTEN)
 
-file(COPY ${CMAKE_CURRENT_LIST_DIR}/assets/ DESTINATION ${CMAKE_BINARY_DIR}/build/assets/)
+# ---- Assets ----
+
+file(COPY ${CMAKE_CURRENT_LIST_DIR}/assets/ DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/)
 
