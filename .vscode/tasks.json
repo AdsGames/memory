@@ -7,9 +7,9 @@
       "label": "Build",
       "type": "shell",
       "detail": "Run and build memory",
-      "command": "cmake --build . && cd build && ./Memory",
+      "command": "cd build && cmake --build . && ./Memory",
       "windows": {
-        "command": "cmake --build . && cd build && Memory.exe"
+        "command": "cd build && cmake --build . && Memory.exe"
       },
       "group": "build",
       "problemMatcher": "$gcc"
