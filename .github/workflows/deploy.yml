@@ -33,7 +33,7 @@ jobs:
       - name: Setup cache
         uses: actions/cache@v4
         with:
-          path: "_deps"
+          path: "./build/release/_deps"
           key: deps-${{ runner.os }}
 
       - uses: mymindstorm/setup-emsdk@v14
