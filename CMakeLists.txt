@@ -18,18 +18,19 @@ target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic)
 target_link_libraries(${PROJECT_NAME} PRIVATE asw)
 
 if(EMSCRIPTEN)
-  set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "index")
-  set(CMAKE_EXECUTABLE_SUFFIX ".html")
+  set_target_properties(${PROJECT_NAME} PROPERTIES
+    OUTPUT_NAME "index"
+    SUFFIX ".html"
+  )
 
-  target_link_options(
-    ${PROJECT_NAME} 
-    PRIVATE
+  target_link_options(${PROJECT_NAME} PRIVATE
     -sWASM=1
     -sALLOW_MEMORY_GROWTH=1
     -sMAXIMUM_MEMORY=1gb
-    "--preload-file ${CMAKE_CURRENT_LIST_DIR}/assets@/assets"
-    "--use-preload-plugins"
-    "--shell-file ${CMAKE_CURRENT_LIST_DIR}/index.html"
+  )
+
+  set_target_properties(${PROJECT_NAME} PROPERTIES
+    LINK_FLAGS "--preload-file ${CMAKE_CURRENT_LIST_DIR}/assets@/assets --use-preload-plugins --shell-file ${CMAKE_CURRENT_LIST_DIR}/index.html"
   )
 endif()
 
