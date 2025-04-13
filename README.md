@@ -15,13 +15,13 @@ Match all the cards on the table in four different difficulties. Compete against
 ### CMake
 
 ```bash
-cmake -B build .
-cmake --build ./build
+cmake --preset debug
+cmake --build --preset debug
 ```
 
 ### Build Emscripten
 
 ```bash
-emcmake cmake -B build .
-cmake --build ./build
+emcmake cmake --preset debug
+cmake --build --preset debug
 ```
