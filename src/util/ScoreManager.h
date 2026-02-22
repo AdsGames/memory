@@ -7,17 +7,15 @@
 using Score = std::pair<std::string, int>;
 
 class ScoreManager {
- public:
-  void saveScores(const std::string& fileName) const;
-  void loadScores(const std::string& fileName);
-  void addScore(const std::string& name, int score);
+public:
+    void save(const std::string& fileName) const;
+    void load(const std::string& fileName);
+    void add(const std::string& name, int score);
 
-  const std::vector<Score>& getScores() const;
+    const std::vector<Score>& get() const;
 
- private:
-  void sort();
-
-  std::vector<Score> scores;
+private:
+    std::vector<Score> scores_;
 };
 
-#endif  // UTIL_SCOREMANAGER_H
+#endif // UTIL_SCOREMANAGER_H

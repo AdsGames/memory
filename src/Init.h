@@ -5,12 +5,12 @@
 #include "State.h"
 
 class Init : public asw::scene::Scene<States> {
- public:
-  using asw::scene::Scene<States>::Scene;
+public:
+    using asw::scene::Scene<States>::Scene;
 
-  void init() override;
+    void init() override;
 
-  void update(float deltaTime) override;
+    void update(float dt) override;
 
-  void draw() override;
+    void draw() override;
 };

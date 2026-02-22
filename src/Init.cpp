@@ -2,18 +2,21 @@
 
 #include <asw/asw.h>
 
-void Init::init() {
-  asw::display::setTitle("Setting up");
-  asw::display::setIcon("assets/img/icon.png");
-  asw::display::setTitle("Memory");
+void Init::init()
+{
+    asw::display::set_title("Setting up");
+    asw::display::set_icon("assets/img/icon.png");
+    asw::display::set_title("Memory");
 }
 
-void Init::update(float deltaTime) {
-  Scene::update(deltaTime);
+void Init::update(float dt)
+{
+    Scene::update(dt);
 
-  sceneManager.setNextScene(States::Intro);
+    manager.set_next_scene(States::Intro);
 }
 
-void Init::draw() {
-  asw::draw::clearColor(asw::util::makeColor(0, 0, 0));
+void Init::draw()
+{
+    asw::draw::clear_color(asw::Color(0, 0, 0));
 }

@@ -3,4 +3,4 @@
 
 enum class GameDifficulty { EASY, MEDIUM, HARD, EXTREME };
 
-#endif  // GAME_DIFFICULTY_H
+#endif // GAME_DIFFICULTY_H

@@ -1,46 +1,53 @@
 #include "ScoreManager.h"
 
 #include <algorithm>
+#include <asw/asw.h>
 #include <fstream>
+#include <ranges>
 
-void ScoreManager::addScore(const std::string& name, int score) {
-  scores.emplace_back(name, score);
-  sort();
-  scores.pop_back();
+void ScoreManager::add(const std::string& name, int score)
+{
+    scores_.emplace_back(name, score);
+    std::ranges::sort(scores_, std::less {}, &Score::second);
+    scores_.pop_back();
 }
 
-void ScoreManager::saveScores(const std::string& fileName) const {
-  std::ofstream saveFile;
-  saveFile.open(fileName.c_str());
+void ScoreManager::save(const std::string& fileName) const
+{
+    std::ofstream saveFile;
+    saveFile.open(fileName.c_str());
 
-  for (const auto& [first, second] : scores) {
-    saveFile << first << " " << second << " ";
-  }
-  saveFile.close();
+    for (const auto& [first, second] : scores_) {
+        saveFile << first << "\n" << second << "\n";
+    }
+    saveFile.close();
 }
 
-void ScoreManager::loadScores(const std::string& fileName) {
-  scores.clear();
-  std::ifstream loadFile;
-  loadFile.open(fileName.c_str());
+void ScoreManager::load(const std::string& fileName)
+{
+    asw::log::info("Loading scores from {}", fileName);
+    scores_.clear();
+    std::ifstream load_file;
+    load_file.open(fileName.c_str());
 
-  std::string name;
-  int score;
+    if (!load_file.is_open()) {
+        asw::log::warn("Failed to open score file: {}", fileName);
+        return;
+    }
 
-  while (loadFile >> name >> score) {
-    scores.emplace_back(name, score);
-  }
+    // Format is name\nscore\nname\nscore\n ... where name can have spaces
+    std::string name;
+    int score;
+    while (load_file >> std::ws && std::getline(load_file, name) && load_file >> score) {
+        scores_.emplace_back(name, score);
+    }
 
-  loadFile.close();
+    load_file.close();
 
-  sort();
+    std::ranges::sort(scores_, std::less {}, &Score::second);
 }
 
-const std::vector<Score>& ScoreManager::getScores() const {
-  return scores;
-}
-
-void ScoreManager::sort() {
-  std::sort(scores.begin(), scores.end(),
-            [](const Score& a, const Score& b) { return a.second < b.second; });
+const std::vector<Score>& ScoreManager::get() const
+{
+    return scores_;
 }

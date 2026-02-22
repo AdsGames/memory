@@ -2,64 +2,59 @@
 #define CARD_H
 
 #include <asw/asw.h>
-#include <asw/util/Timer.h>
-#include <time.h>
 #include <map>
 #include <string>
+#include <time.h>
 
 #include "globals.h"
 
-const double CARD_FLIP_TIME_MS = 250.0;
+const float CARD_FLIP_TIME_S = 0.25F;
 
 class Card {
- public:
-  Card(int type, int size);
+public:
+    Card(int type, float size);
 
-  void update();
-  void draw() const;
+    void update(float dt);
+    void draw() const;
 
-  void setPosition(int x, int y);
-  void deselect();
-  void match();
-  void setType(int type);
+    void set_position(float x, float y);
+    void deselect();
+    void match();
+    void set_type(int type);
 
-  bool isSelected() const;
-  bool isAnimationDone() const;
-  bool isOffScreen() const;
-  int getType() const;
+    bool is_selected() const;
+    bool is_animation_done() const;
+    bool is_off_screen() const;
+    int get_type() const;
 
- private:
-  static std::map<int, std::string> CARD_ASSETS;
-  static std::map<int, asw::Texture> FACE_IMAGES;
-  static asw::Texture backImage;
+private:
+    static std::map<int, std::string> CARD_ASSETS;
+    static std::map<int, asw::Texture> FACE_IMAGES;
+    static asw::Texture backImage;
 
-  asw::Sample cardFlip;
-  asw::Sample whoosh;
+    asw::Sample card_flip_;
+    asw::Sample whoosh_;
 
-  int x{0};
-  int y{0};
+    asw::Quad<float> transform_;
 
-  int width;
-  int height;
+    float animation_width_;
 
-  int animationWidth;
+    int type_;
 
-  int type;
+    // If selected or not
+    bool selected_ { false };
 
-  // If selected or not
-  bool selected{false};
+    // The turning animation is done
+    bool animation_done_ { true };
 
-  // The turning animation is done
-  bool animationDone{true};
+    // True when picture side up
+    bool flipped_ { false };
 
-  // True when picture side up
-  bool flipped{false};
+    // True when a match is made
+    bool matched_ { false };
 
-  // True when a match is made
-  bool matched{false};
-
-  // Animation timer
-  Timer animationTime{};
+    // Animation timer
+    float animation_time_ {};
 };
 
 #endif

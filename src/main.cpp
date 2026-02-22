@@ -16,19 +16,19 @@
 #include "State.h"
 
 // Main function*/
-int main() {
-  asw::core::init(1280, 960);
+int main()
+{
+    asw::core::init(1280, 960);
 
-  auto app = asw::scene::SceneManager<States>();
-  app.registerScene<Init>(States::Init, app);
-  app.registerScene<Intro>(States::Intro, app);
-  app.registerScene<Menu>(States::Menu, app);
-  app.registerScene<LevelSelect>(States::LevelSelect, app);
-  app.registerScene<Game>(States::Game, app);
-  app.registerScene<HighScores>(States::HighScores, app);
-  app.setNextScene(States::Init);
+    auto app = asw::scene::SceneManager<States>();
+    app.register_scene<Init>(States::Init, app);
+    app.register_scene<Intro>(States::Intro, app);
+    app.register_scene<Menu>(States::Menu, app);
+    app.register_scene<LevelSelect>(States::LevelSelect, app);
+    app.register_scene<Game>(States::Game, app);
+    app.register_scene<HighScores>(States::HighScores, app);
+    app.set_next_scene(States::Init);
+    app.start();
 
-  app.start();
-
-  return 0;
+    return 0;
 }

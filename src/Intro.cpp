@@ -3,21 +3,23 @@
 #include <string>
 #include <vector>
 
-void Intro::init() {
-  intro = asw::assets::loadTexture("assets/img/intro.png");
-  timer.start();
+void Intro::init()
+{
+    intro_ = asw::assets::load_texture("assets/img/intro.png");
 }
 
-void Intro::update(float deltaTime) {
-  Scene::update(deltaTime);
+void Intro::update(float dt)
+{
+    Scene::update(dt);
 
-  auto time = timer.getElapsedTime<std::chrono::milliseconds>();
+    timer_ += dt;
 
-  if (time >= 3000 || asw::input::keyboard.anyPressed) {
-    sceneManager.setNextScene(States::Menu);
-  }
+    if (timer_ >= 3.0F || asw::input::keyboard.any_pressed) {
+        manager.set_next_scene(States::Menu);
+    }
 }
 
-void Intro::draw() {
-  asw::draw::sprite(intro, asw::Vec2<float>(0, 0));
+void Intro::draw()
+{
+    asw::draw::sprite(intro_, asw::Vec2<float>(0, 0));
 }

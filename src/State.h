@@ -8,10 +8,10 @@
 
 // Game states
 enum class States {
-  Init,
-  Intro,
-  Menu,
-  HighScores,
-  LevelSelect,
-  Game,
+    Init,
+    Intro,
+    Menu,
+    HighScores,
+    LevelSelect,
+    Game,
 };

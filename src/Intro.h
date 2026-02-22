@@ -1,23 +1,22 @@
 #pragma once
 
 #include <asw/asw.h>
-#include <asw/util/Timer.h>
 
 #include "State.h"
 
 // Intro screen of game
 class Intro : public asw::scene::Scene<States> {
- public:
-  using asw::scene::Scene<States>::Scene;
+public:
+    using asw::scene::Scene<States>::Scene;
 
-  void init() override;
+    void init() override;
 
-  void update(float deltaTime) override;
+    void update(float dt) override;
 
-  void draw() override;
+    void draw() override;
 
- private:
-  asw::Texture intro;
+private:
+    asw::Texture intro_;
 
-  Timer timer;
+    float timer_ { 0.0F };
 };

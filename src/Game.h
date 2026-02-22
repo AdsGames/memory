@@ -12,43 +12,43 @@
 #include "util/ScoreManager.h"
 
 struct DifficultyConfig {
-  std::string highscoresFile;
-  int dimension;
+    std::string highscore_file;
+    int dimension { 0 };
 };
 
 // Intro screen of game
 class Game : public asw::scene::Scene<States> {
- public:
-  using asw::scene::Scene<States>::Scene;
+public:
+    using asw::scene::Scene<States>::Scene;
 
-  void init() override;
+    void init() override;
 
-  void update(float deltaTime) override;
+    void update(float dt) override;
 
-  void draw() override;
+    void draw() override;
 
-  static GameDifficulty difficulty;
+    static GameDifficulty difficulty;
 
- private:
-  static std::map<GameDifficulty, DifficultyConfig> DIFFICULTY_CONFIG;
+private:
+    static std::map<GameDifficulty, DifficultyConfig> DIFFICULTY_CONFIG;
 
-  void initCards(const DifficultyConfig& config);
-  void eraseOffScreenCards();
-  void matchCards();
-  void calculateSelectedCards();
-  void endgameUpdate();
+    void init_cards(const DifficultyConfig& config);
+    void erase_off_screen_cards();
+    void match_cards();
+    void calculate_selected_cards();
+    void endgame_update();
 
-  asw::Texture background;
-  asw::Font font;
+    int moves_ { 0 };
 
-  int moves{0};
+    std::vector<Card> cards_;
 
-  std::vector<Card> cards;
+    asw::ui::Root ui_;
+    asw::ui::InputBox* in_name_ { nullptr };
+    asw::ui::Label* lbl_moves_ { nullptr };
+    asw::ui::Panel* end_panel_ { nullptr };
 
-  InputBox nameBox;
+    ScoreManager score_manager_;
 
-  ScoreManager scoreManager;
-
-  unsigned int cardSelected1{0};
-  unsigned int cardSelected2{0};
+    unsigned int card_selected_1_ { 0 };
+    unsigned int card_selected_2_ { 0 };
 };
