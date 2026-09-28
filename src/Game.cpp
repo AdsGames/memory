@@ -32,8 +32,17 @@ void Game::init()
     const auto font = asw::assets::load_font("assets/fonts/jersey-10.ttf", 48);
 
     ui_ = asw::ui::Root();
-    ui_.root.transform.set_size(screen_size.x, screen_size.y);
+    ui_.ctx.navigation = controls::navigation();
+    ui_.ctx.theme.font = font;
+    ui_.ctx.theme.text = asw::Color(0, 0, 0);
     ui_.root.bg_image = asw::assets::load_texture("assets/img/backgrounds/background.png");
+
+    // Go to menu, unless the game is over and the name is being entered
+    ui_.on_back = [this]() {
+        if (!cards_.empty()) {
+            manager.set_next_scene(States::Menu);
+        }
+    };
 
     // Moves panel
     auto& pnl_moves = ui_.root.add_child<asw::ui::Panel>();
@@ -43,7 +52,6 @@ void Game::init()
 
     auto& lbl_moves = pnl_moves.add_child<asw::ui::Label>();
     lbl_moves.transform.set_position(20, 20);
-    lbl_moves.font = font;
     lbl_moves_ = &lbl_moves;
 
     // Level end panel
@@ -57,13 +65,11 @@ void Game::init()
     auto& in_name = end_panel.add_child<asw::ui::InputBox>();
     in_name.transform.set_position(screen_size.x / 2 - 200, screen_size.y / 2 - 50);
     in_name.transform.set_size(400, 80);
-    in_name.font = font;
     in_name.value = "Player";
     in_name_ = &in_name;
 
     auto& lbl_complete = end_panel.add_child<asw::ui::Label>();
     lbl_complete.transform.set_position(screen_size.x / 2, screen_size.y / 2 - 100);
-    lbl_complete.font = font;
     lbl_complete.text = "Congratulations! Enter Your Name";
     lbl_complete.justify = asw::TextJustify::Center;
 
@@ -114,10 +120,6 @@ void Game::update(float dt)
     if (cards_.empty()) {
         endgame_update();
     }
-    // Go to menu
-    else if (asw::input::get_action_down(controls::UI_BACK)) {
-        manager.set_next_scene(States::Menu);
-    }
 
     erase_off_screen_cards();
     calculate_selected_cards();
@@ -134,7 +136,11 @@ void Game::update(float dt)
 
 void Game::endgame_update()
 {
-    end_panel_->visible = true;
+    // Show the name entry and focus it so typing goes to it
+    if (!end_panel_->visible) {
+        end_panel_->visible = true;
+        ui_.focus(*in_name_);
+    }
 
     if (asw::input::get_action_down(controls::CONFIRM)) {
         const auto& config = DIFFICULTY_CONFIG[difficulty];
