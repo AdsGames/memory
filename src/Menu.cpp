@@ -30,7 +30,7 @@ void Menu::init()
     btn_quit.transform = { 320, 535, 640, 100 };
     btn_quit.text = "Quit";
     btn_quit.font = font;
-    btn_quit.on_click = []() { asw::core::exit = true; };
+    btn_quit.on_click = []() { asw::core::exit(); };
 }
 
 void Menu::update(float dt)
