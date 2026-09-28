@@ -8,7 +8,6 @@
 #include "Card.h"
 #include "GameDifficulty.h"
 #include "State.h"
-#include "ui/InputBox.h"
 #include "util/ScoreManager.h"
 
 struct DifficultyConfig {
