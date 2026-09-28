@@ -1,6 +1,6 @@
 #include "Card.h"
 
-#include <numbers>
+#include <cmath>
 #include <string>
 
 asw::Texture Card::backImage { nullptr };
@@ -115,8 +115,9 @@ void Card::update(float dt)
     if (!animation_done_) {
         animation_time_ += dt;
         auto interpolation = animation_time_ / CARD_FLIP_TIME_S;
-        auto widthMult = (cos(2.0F * std::numbers::pi_v<float> * interpolation) + 1.0F) / 2.0F;
-        animation_width_ = transform_.size.x * widthMult;
+        // Shrink to nothing at the halfway point, then grow back
+        animation_width_ = asw::easing::ease(0.0F, transform_.size.x,
+            std::abs((2.0F * interpolation) - 1.0F), asw::easing::ease_in_out_sine);
 
         if (selected_) {
             if (!flipped_ && interpolation > 0.5F) {
