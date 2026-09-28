@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "Controls.h"
+
 std::map<GameDifficulty, std::string> HighScores::SCORE_FILES {
     { GameDifficulty::EASY, "assets/data/highscores_easy.dat" },
     { GameDifficulty::MEDIUM, "assets/data/highscores_medium.dat" },
@@ -18,8 +20,11 @@ void HighScores::init()
     font_ = asw::assets::load_font("assets/fonts/jersey-10.ttf", 48);
 
     ui_ = asw::ui::Root();
-    ui_.root.transform.size = asw::Vec2<float>(1280, 960);
+    ui_.ctx.navigation = controls::navigation();
+    ui_.ctx.theme.font = font_;
+    ui_.ctx.theme.text = asw::Color(0, 0, 0);
     ui_.root.bg_image = background;
+    ui_.on_back = [this]() { manager.set_next_scene(States::Menu); };
 
     auto& pnl_scores = ui_.root.add_child<asw::ui::Panel>();
     pnl_scores.transform.set_position(320, 130);
@@ -29,7 +34,6 @@ void HighScores::init()
     auto& btn_left = ui_.root.add_child<asw::ui::Button>();
     btn_left.transform = { 0, 0, 64, 960 };
     btn_left.text = "<";
-    btn_left.font = font_;
     btn_left.on_click = [this, click]() {
         if (difficulty_ != GameDifficulty::EASY) {
             difficulty_ = static_cast<GameDifficulty>(static_cast<int>(difficulty_) - 1);
@@ -41,7 +45,6 @@ void HighScores::init()
     auto& btn_right = ui_.root.add_child<asw::ui::Button>();
     btn_right.transform = { 1216, 0, 64, 960 };
     btn_right.text = ">";
-    btn_right.font = font_;
     btn_right.on_click = [this, click]() {
         if (difficulty_ != GameDifficulty::EXTREME) {
             difficulty_ = static_cast<GameDifficulty>(static_cast<int>(difficulty_) + 1);
@@ -52,13 +55,11 @@ void HighScores::init()
 
     auto& lbl_title = ui_.root.add_child<asw::ui::Label>();
     lbl_title.transform = { 640, 50, 0, 0 };
-    lbl_title.font = font_;
     lbl_title.text = "High Scores";
     lbl_title.justify = asw::TextJustify::Center;
 
     auto& lbl_mode = ui_.root.add_child<asw::ui::Label>();
     lbl_mode.transform = { 640, 150, 0, 0 };
-    lbl_mode.font = font_;
     lbl_mode.text = "";
     lbl_mode.justify = asw::TextJustify::Center;
     lbl_mode_ = &lbl_mode;
@@ -79,11 +80,6 @@ void HighScores::update(float dt)
         lbl_mode_->text = "Hard";
     } else if (difficulty_ == GameDifficulty::EXTREME) {
         lbl_mode_->text = "Extreme";
-    }
-
-    // Go to menu
-    if (asw::input::get_key_down(asw::input::Key::Escape)) {
-        manager.set_next_scene(States::Menu);
     }
 }
 

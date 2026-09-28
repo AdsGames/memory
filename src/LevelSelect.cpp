@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "Controls.h"
 #include "Game.h"
 
 void LevelSelect::init()
@@ -22,14 +23,15 @@ void LevelSelect::init()
     const auto click = asw::assets::load_sample("assets/sfx/click.wav");
 
     ui_ = asw::ui::Root();
-    ui_.root.transform.size = asw::Vec2<float>(1280, 960);
+    ui_.ctx.navigation = controls::navigation();
+    ui_.ctx.theme.font = font;
     ui_.root.bg_image = background;
+    ui_.on_back = [this]() { manager.set_next_scene(States::Menu); };
 
     // Add buttons
     auto& btn_left = ui_.root.add_child<asw::ui::Button>();
     btn_left.transform = { 0, 0, 64, 960 };
     btn_left.text = "<";
-    btn_left.font = font;
     btn_left.on_click = [this, click]() {
         if (difficulty_ != GameDifficulty::EASY) {
             difficulty_ = static_cast<GameDifficulty>(static_cast<int>(difficulty_) - 1);
@@ -48,7 +50,6 @@ void LevelSelect::init()
     auto& btn_right = ui_.root.add_child<asw::ui::Button>();
     btn_right.transform = { 1216, 0, 64, 960 };
     btn_right.text = ">";
-    btn_right.font = font;
     btn_right.on_click = [this, click]() {
         if (difficulty_ != GameDifficulty::EXTREME) {
             difficulty_ = static_cast<GameDifficulty>(static_cast<int>(difficulty_) + 1);
@@ -61,11 +62,6 @@ void LevelSelect::update(float dt)
 {
     Scene::update(dt);
     ui_.update();
-
-    // Go to menu
-    if (asw::input::get_key_down(asw::input::Key::Escape)) {
-        manager.set_next_scene(States::Menu);
-    }
 }
 
 void LevelSelect::draw()
