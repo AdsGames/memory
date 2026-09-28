@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "Controls.h"
 #include "Game.h"
 
 void LevelSelect::init()
@@ -61,9 +62,10 @@ void LevelSelect::update(float dt)
 {
     Scene::update(dt);
     ui_.update();
+    controls::update_ui(ui_);
 
     // Go to menu
-    if (asw::input::get_key_down(asw::input::Key::Escape)) {
+    if (asw::input::get_action_down(controls::UI_BACK)) {
         manager.set_next_scene(States::Menu);
     }
 }

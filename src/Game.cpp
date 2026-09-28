@@ -7,6 +7,7 @@
 #include <random>
 #include <ranges>
 
+#include "Controls.h"
 #include "globals.h"
 
 GameDifficulty Game::difficulty = GameDifficulty::EASY;
@@ -114,7 +115,7 @@ void Game::update(float dt)
         endgame_update();
     }
     // Go to menu
-    else if (asw::input::get_key_down(asw::input::Key::Escape)) {
+    else if (asw::input::get_action_down(controls::UI_BACK)) {
         manager.set_next_scene(States::Menu);
     }
 
@@ -135,7 +136,7 @@ void Game::endgame_update()
 {
     end_panel_->visible = true;
 
-    if (asw::input::get_key_down(asw::input::Key::Return)) {
+    if (asw::input::get_action_down(controls::CONFIRM)) {
         const auto& config = DIFFICULTY_CONFIG[difficulty];
         score_manager_.add(in_name_->value, moves_);
         score_manager_.save(config.highscore_file);

@@ -1,7 +1,6 @@
 #include "Intro.h"
 
-#include <string>
-#include <vector>
+#include "Controls.h"
 
 void Intro::init()
 {
@@ -14,7 +13,8 @@ void Intro::update(float dt)
 
     timer_ += dt;
 
-    if (timer_ >= 3.0F || asw::input::get_keyboard().any_pressed) {
+    if (timer_ >= 3.0F || asw::input::get_keyboard().any_pressed
+        || controls::any_controller_skip()) {
         manager.set_next_scene(States::Menu);
     }
 }

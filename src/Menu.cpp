@@ -1,7 +1,6 @@
 #include "Menu.h"
 
-#include <string>
-#include <vector>
+#include "Controls.h"
 
 void Menu::init()
 {
@@ -37,6 +36,7 @@ void Menu::update(float dt)
 {
     Scene::update(dt);
     ui_.update();
+    controls::update_ui(ui_);
 }
 
 void Menu::draw()

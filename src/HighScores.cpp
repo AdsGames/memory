@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "Controls.h"
+
 std::map<GameDifficulty, std::string> HighScores::SCORE_FILES {
     { GameDifficulty::EASY, "assets/data/highscores_easy.dat" },
     { GameDifficulty::MEDIUM, "assets/data/highscores_medium.dat" },
@@ -70,6 +72,7 @@ void HighScores::update(float dt)
 {
     Scene::update(dt);
     ui_.update();
+    controls::update_ui(ui_);
 
     if (difficulty_ == GameDifficulty::EASY) {
         lbl_mode_->text = "Easy";
@@ -82,7 +85,7 @@ void HighScores::update(float dt)
     }
 
     // Go to menu
-    if (asw::input::get_key_down(asw::input::Key::Escape)) {
+    if (asw::input::get_action_down(controls::UI_BACK)) {
         manager.set_next_scene(States::Menu);
     }
 }

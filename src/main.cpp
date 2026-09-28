@@ -7,6 +7,7 @@
 #include <asw/asw.h>
 
 // For state engine
+#include "Controls.h"
 #include "Game.h"
 #include "HighScores.h"
 #include "Init.h"
@@ -19,6 +20,7 @@
 int main()
 {
     asw::core::init(1280, 960);
+    controls::bind();
 
     auto app = asw::scene::SceneManager<States>();
     app.register_scene<Init>(States::Init, app);
