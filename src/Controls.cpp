@@ -15,7 +15,8 @@ constexpr auto ANY = asw::input::ANY_CONTROLLER;
 // Stick must pass this before it counts as a direction
 constexpr float STICK_THRESHOLD = 0.5F;
 
-void bind_direction(const std::string& name, ControllerButton dpad, ControllerAxis axis, bool positive)
+void bind_direction(
+    const std::string& name, ControllerButton dpad, ControllerAxis axis, bool positive)
 {
     asw::input::bind_action(name, ControllerButtonBinding { dpad, ANY });
     asw::input::bind_action(name, ControllerAxisBinding { axis, ANY, STICK_THRESHOLD, positive });

@@ -98,8 +98,8 @@ void Card::update(float dt)
 {
     auto screen_size = asw::display::get_logical_size();
 
-    if (!selected_ && asw::input::get_mouse_button_down(asw::input::MouseButton::Left) && number_selected < 2
-        && transform_.contains(asw::input::get_mouse().position)) {
+    if (!selected_ && asw::input::get_mouse_button_down(asw::input::MouseButton::Left)
+        && number_selected < 2 && transform_.contains(asw::input::get_mouse().position)) {
         animation_time_ = 0.0F;
         asw::sound::play(card_flip_);
         selected_ = true;
